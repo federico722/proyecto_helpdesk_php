@@ -33,6 +33,7 @@ class Create_user{
                 exit;
             }
 
+            // verifica si los datos son cadenas y si el correo tiene un formato valido
             if (!esCorreoValido($correo) || !sonCadenas([$usuario,$contrasena,$correo])) {
                 header('HTTP/1.1 404 No son string');
                 echo json_encode(["error"=> "Solo se permite string y el correo debe ser valido"]);

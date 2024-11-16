@@ -11,11 +11,7 @@ function consultarContraseña($usuario){
 
         if ($stmt->execute()) {
             $resultado =  $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($resultado) {
-                return $resultado['contrasena_agente'];
-            } else {
-                return false; // Usuario no encontrado
-            }
+            return $resultado ? $resultado['contrasena_agente'] : false ;
         }else {
             return false; // Error en la ejecución de la consulta
         }
