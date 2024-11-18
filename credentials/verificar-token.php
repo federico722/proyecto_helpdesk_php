@@ -24,10 +24,7 @@ function verificarToken($jwt){
        //Verifica si el token ha expirado
        $now = time();
        if ($decoded->exp < $now) {
-           return [
-             'success' => false,
-             'message' => 'Token expirado'
-           ];
+           return false;
        }
 
        //el token es valido

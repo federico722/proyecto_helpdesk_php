@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '..\..\includes\Database.class.php';
 
+
 function consultarContraseña($usuario){
     try {
         $database = new Database();

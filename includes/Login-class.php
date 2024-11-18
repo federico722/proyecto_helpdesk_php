@@ -51,22 +51,21 @@ class Login{
 
                 //verificamos que si obtenemos la contraseña
                 if ($contrasenaObtenida === false) {
-                    sendResponse(404, ["error" => "Usuario no encontrado"]);
-                    return;
+                    return sendResponse(404, ["error" => "Usuario no encontrado"]);
                 }
 
                 //verificamos la contraseña del usuario con la contraseña de la base de datos
                 if (verificarContrasena($contrasena, $contrasenaObtenida)) {
 
                     $token = crearToken($usuario);
-                    sendResponse(200, [
+                   return sendResponse(200, [
                        "success" => "Usuario verificado con exito",
                        "login" => true,
                        "token" => $token
                     ]);
 
                 }else{
-                   sendResponse(401, ["error" => "Contraseña incorrecta"]);
+                  return sendResponse(401, ["error" => "Contraseña incorrecta"]);
                 }
 
             } catch (\Throwable $th) {

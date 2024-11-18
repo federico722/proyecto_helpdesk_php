@@ -1,13 +1,10 @@
 <?php
 
-require_once '../../includes/verificando-sesion.class.php';
+require_once '..\..\includes\Create-category.class.php';
 require_once '../../logica/formatoRespuesta.php';
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Authorization');
-
-
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -22,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (strcasecmp($type, 'Bearer') === 0) {
             // Llama a la función de verificación con el token extraído
-            Verificacion_sesion::verificacion($token);
+            Create_Category::crearCategoriaEquipo($token);
         }else {
             sendResponse(400, ['Error' => "El tipo de token debe ser Bearer"]);
         }

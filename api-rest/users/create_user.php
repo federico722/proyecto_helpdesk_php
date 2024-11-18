@@ -1,6 +1,7 @@
 <?php
 
 require_once '../../includes/Create-user.class.php';
+require_once '../../logica/formatoRespuesta.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     Create_user::crear_usuario();
