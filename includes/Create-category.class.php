@@ -25,6 +25,7 @@ class Create_Category{
 
         $nombre_categoria = $data['nombre_categoria'];
 
+        //verifica que el token no haya vencido
         if (!verificarToken($token)) {
             return sendResponse(400, ["Error" => "el token expiro"]);
         }
