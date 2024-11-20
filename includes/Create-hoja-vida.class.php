@@ -14,9 +14,9 @@ require_once __DIR__ . '..\..\credentials\verificar-token.php';
 require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 
-class Create_licencia{
+class Create_paper_life{
 
-    public static function crearLicencia($token){
+    public static function crearHojaVida($token){
         // Obtener el cuerpo de la solicitud en formato JSON
         $data = json_decode(file_get_contents("php://input"), true);
 
@@ -51,7 +51,7 @@ class Create_licencia{
 
         // verificar si son cadenas
         $camposValidar = [
-            'descripcion_anotaciones' => $$descripcion_anotaciones, 'author_anotacion' => $author_anotacion];
+            'descripcion_anotaciones' => $descripcion_anotaciones, 'author_anotacion' => $author_anotacion];
 
          //validar los campos
          $resultado = validarArrayFlexible($camposValidar, 1, 1000);
@@ -69,31 +69,25 @@ class Create_licencia{
         try {
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('INSERT INTO LICENCIAS (nombre_licencia,descripcion_licencia, numero_licencia,fecha_adquisicion,tipo_licencia,costo_licencia, id_equipo, usuarios_permitidos, proveedor_licencia, estado_licencia, duracion_licencia) VALUES(:nombre_licencia, :descripcion_licencia,:numero_licencia ,:fecha_adquisicion, :tipo_licencia ,:costo_licencia, :id_equipo,:usuarios_permitidos, :proveedor_licencia, :estado_licencia, :duracion_licencia)');
-            $stmt->bindParam(':nombre_licencia',$nombre_licencia);
-            $stmt->bindParam(':descripcion_licencia',$descripcion_licencia);
-            $stmt->bindParam(':numero_licencia',$numero_licencia);
-            $stmt->bindParam(':fecha_adquisicion',$fecha_adquisicion);
-            $stmt->bindParam(':tipo_licencia',$tipo_licencia);
-            $stmt->bindParam(':costo_licencia',$costo_licencia);
+            $stmt = $conn->prepare('INSERT INTO HOJAS_VIDA (fecha_anotacion, descripcion_anotaciones,id_equipo,author_anotacion) VALUES(:fecha_anotacion,:descripcion_anotaciones,:id_equipo, :author_anotacion)');
+            $stmt->bindParam(':fecha_anotacion',$fecha_anotacion);
+            $stmt->bindParam(':descripcion_anotaciones',$descripcion_anotaciones);
             $stmt->bindParam(':id_equipo',$id_equipo);
-            $stmt->bindParam(':usuarios_permitidos',$usuarios_permitidos);
-            $stmt->bindParam(':proveedor_licencia',$proveedor_licencia);
-            $stmt->bindParam(':estado_licencia',$estado_licencia);
-            $stmt->bindParam(':duracion_licencia',$duracion_licencia);
+            $stmt->bindParam(':author_anotacion',$author_anotacion);
+
 
 
 
             if($stmt->execute()){
                 // Responder con éxito
-                return sendResponse(200, ["success" => "licencia " .$nombre_licencia. " guardado con exito. "]);
+                return sendResponse(200, ["success" => "hoja de vida guardada con exito. "]);
                }else{
                    // Responder con error 500 si la inserción falla
-                return sendResponse(500, ["error" => "No se pudo crear el servicio"]);
+                return sendResponse(500, ["error" => "No se pudo guardar la hoja de vida"]);
               }
 
         } catch (\Throwable $th) {
-            error_log('Error al agregar el servicio: ' . $th->getMessage());
+            error_log('Error al agregar la hoja de vida: ' . $th->getMessage());
             return sendResponse(500, [
                 "error" => "ocurrio un error interno del servidor",
                 "detalles" => $th->getMessage()
