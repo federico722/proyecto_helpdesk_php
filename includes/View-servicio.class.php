@@ -17,14 +17,18 @@ require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 class View_service{
     public static function ver_servicio($token,$id_equipo){
 
+        try {
+
         // Verificar si los datos necesarios están presentes
         if (!isset($id_equipo)) {
             return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
         }
 
-        //verifica que el token no haya vencido
-        if (!verificarToken($token)) {
-            return sendResponse(400, ["Error" => "el token expiro"]);
+        // Verifica que el token no haya vencido
+        $tokenValidation = validarTokenEnClase($token);
+
+        if (!$tokenValidation ) {
+            return sendResponse(400, ["Error" => "Token vencido"]);
         }
 
 
@@ -34,7 +38,7 @@ class View_service{
             ]);
         }
 
-        try {
+
             $database = new Database();
             $conn = $database->getConnection();
             $stmt = $conn->prepare('SELECT nombre_servicio FROM SERVICIOS WHERE id_equipo = :id_equipo');

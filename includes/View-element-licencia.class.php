@@ -16,20 +16,22 @@ require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 
 class view_element_licencia{
     public static function ver_elementos_licencias($token,$nombre_licencia){
+        try {
+
+        $tokenValidation = validarTokenEnClase($token);
+
+        if (!$tokenValidation ) {
+            return sendResponse(400, ["Error" => "Token vencido"]);
+        }
 
          // Verificar si los datos necesarios están presentes
          if (!isset($nombre_licencia)) {
             return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
         }
 
-        //verifica que el token no haya vencido
-        if (!verificarToken($token)) {
-            return sendResponse(400, ["Error" => "el token expiro"]);
-        }
-
         // verificar si son cadenas
         $camposValidar = [
-            'nombre_equipo' => $nombre_licencia];
+            'nombre_licencia' => $nombre_licencia];
 
          //validar los campos
          $resultado = validarArrayFlexible($camposValidar, 1, 1000);
@@ -43,7 +45,7 @@ class view_element_licencia{
 
         $nombre_licencia = $resultado['datos']['nombre_licencia'];
 
-        try {
+
             $database = new Database();
             $conn = $database->getConnection();
             $stmt = $conn->prepare('SELECT * FROM LICENCIAS WHERE nombre_licencia = :nombre_licencia');

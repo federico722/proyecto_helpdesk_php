@@ -10,6 +10,8 @@ class Create_user{
 
     public static function crear_usuario(){
 
+        try {
+
             // Obtener el cuerpo de la solicitud en formato JSON
             $data = json_decode(file_get_contents("php://input"), true);
 
@@ -40,7 +42,7 @@ class Create_user{
                 exit;
             }
 
-        try {
+
             // Encriptar la contraseña antes de guardarla
              $contrasenaHash = password_hash($contrasena, PASSWORD_BCRYPT);
 

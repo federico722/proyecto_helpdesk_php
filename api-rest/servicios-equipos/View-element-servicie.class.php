@@ -1,6 +1,6 @@
 <?php
 
-require_once '..\..\includes\View-servicio.class.php';
+require_once '..\..\includes\View-element-service.class.php';
 require_once '../../logica/formatoRespuesta.php';
 
 
@@ -8,7 +8,8 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Authorization');
 
 try {
-    if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id_equipo']) ) {
+
+    if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['nombre_servicio']) ) {
 
         // getallheaders() para obtener los encabezados
         $headers = getallheaders();
@@ -21,7 +22,7 @@ try {
 
             if (strcasecmp($type, 'Bearer') === 0) {
                 // Llama a la función de verificación con el token extraído
-                 View_service::ver_servicio($token, $_GET['id_equipo']);
+                 View_element_servicio::ver_elementos_servicio($token,$_GET['nombre_servicio']);
             }else {
                 sendResponse(400, ['Error' => "El tipo de token debe ser Bearer"]);
             }
@@ -32,7 +33,7 @@ try {
         }
     }else{
         sendResponse(405,
-        ['verificacion_tiempo_token'=> "funcionando correctamente"]
+        ['Error'=> "Metodo incorrecto"]
       );
     }
 } catch (Exception $e) {
@@ -41,4 +42,3 @@ try {
         'detalle' => $e->getMessage()
     ]);
 }
-

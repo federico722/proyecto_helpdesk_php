@@ -17,15 +17,20 @@ require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 class view_element_equip{
     public static function ver_elementos_equipos($token,$nombre_equipo){
 
+        try {
+
          // Verificar si los datos necesarios están presentes
          if (!isset($nombre_equipo)) {
             return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
         }
 
         //verifica que el token no haya vencido
-        if (!verificarToken($token)) {
-            return sendResponse(400, ["Error" => "el token expiro"]);
+        $tokenValidation = validarTokenEnClase($token);
+
+        if (!$tokenValidation ) {
+            return sendResponse(400, ["Error" => "Token vencido"]);
         }
+
 
         // verificar si son cadenas
         $camposValidar = [
@@ -43,7 +48,7 @@ class view_element_equip{
 
         $nombre_equipo = $resultado['datos']['nombre_equipo'];
 
-        try {
+
             $database = new Database();
             $conn = $database->getConnection();
             $stmt = $conn->prepare('SELECT EQUIPOS.*, AGENTES.usuario_agente FROM EQUIPOS LEFT JOIN AGENTES ON EQUIPOS.id_agente = AGENTES.id_agente WHERE EQUIPOS.nombre_equipo = :nombre_equipo');

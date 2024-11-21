@@ -13,39 +13,38 @@ require_once __DIR__ . '..\..\logica\formatoRespuesta.php';
 
 class Login{
     public static function iniciar_sesion(){
-
-         // Obtener el cuerpo de la solicitud en formato JSON
+            try {
+          // Obtener el cuerpo de la solicitud en formato JSON
          $data = json_decode(file_get_contents("php://input"), true);
 
 
 
-           // Verificar si los datos necesarios están presentes
-            if (!isset($data['usuario'], $data['contrasena'], $data['confirmarContrasena'] )) {
-                header('HTTP/1.1 400 Bad Request');
-                echo json_encode(["error" => "Faltan datos en la solicitud"]);
-                exit;
-            }
+         // Verificar si los datos necesarios están presentes
+          if (!isset($data['usuario'], $data['contrasena'], $data['confirmarContrasena'] )) {
+              header('HTTP/1.1 400 Bad Request');
+              echo json_encode(["error" => "Faltan datos en la solicitud"]);
+              exit;
+          }
 
-             // Obtengo los datos del formato json
-             $usuario = $data['usuario'];
-             $contrasena = $data['contrasena'];
-             $confirmarContrasena = $data['confirmarContrasena'];
+           // Obtengo los datos del formato json
+           $usuario = $data['usuario'];
+           $contrasena = $data['contrasena'];
+           $confirmarContrasena = $data['confirmarContrasena'];
 
-             // compara las contraseñas
-            if (!comparePassword($contrasena,$confirmarContrasena)) {
-                header('HTTP/1.1 404 No coincide la contrasena');
-                echo json_encode(["error" => "Las contrasenas no coinciden"]);
-                exit;
-            }
+           // compara las contraseñas
+          if (!comparePassword($contrasena,$confirmarContrasena)) {
+              header('HTTP/1.1 404 No coincide la contrasena');
+              echo json_encode(["error" => "Las contrasenas no coinciden"]);
+              exit;
+          }
 
-            // verificar si son cadenas
-            if (!sonCadenas([$usuario,$contrasena])) {
-                header('HTTP/1.1 404 No son string');
-                echo json_encode(["error"=> "Solo se permite string y el correo debe ser valido"]);
-                exit;
-            }
+          // verificar si son cadenas
+          if (!sonCadenas([$usuario,$contrasena])) {
+              header('HTTP/1.1 404 No son string');
+              echo json_encode(["error"=> "Solo se permite string y el correo debe ser valido"]);
+              exit;
+          }
 
-            try {
                 //obtenemos la contraseña del usuario (si existe) en la base
                 $contrasenaObtenida = consultarContraseña($usuario);
 

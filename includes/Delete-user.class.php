@@ -15,19 +15,19 @@ require_once __DIR__ . '..\..\logica\confirmarInt.php';
 class Delete{
     public static function delete_users($id_agente){
 
-        $id = $id_agente;
-
-        // Verificar si los datos necesarios están presentes
-        if (!isset($id)) {
-           return sendResponse(400, ["Error" => "El id del usuario no fue enviado"]);
-        }
-
-          // verificar si son cadenas
-          if (!sonNumerico([$id])) {
-            return sendResponse(400, ["Error" => "formato incorrecto no ser permite valores no numericos"]);
-        }
-
         try {
+            $id = $id_agente;
+
+            // Verificar si los datos necesarios están presentes
+            if (!isset($id)) {
+               return sendResponse(400, ["Error" => "El id del usuario no fue enviado"]);
+            }
+
+              // verificar si son cadenas
+              if (!sonNumerico([$id])) {
+                return sendResponse(400, ["Error" => "formato incorrecto no ser permite valores no numericos"]);
+            }
+
             $database = new Database();
             $conn = $database->getConnection();
 

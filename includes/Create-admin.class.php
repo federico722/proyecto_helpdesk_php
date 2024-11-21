@@ -11,57 +11,52 @@ class Create_admin{
 
 
     public static function crear_administrador(){
-
-            // Obtener el cuerpo de la solicitud en formato JSON
-            $data = json_decode(file_get_contents("php://input"), true);
-
-            // Verificar si los datos necesarios están presentes
-            if (!isset($data['usuario'], $data['contrasena'], $data['confirmarContrasena'])) {
-                header('HTTP/1.1 400 Bad Request');
-                echo json_encode(["error" => "Faltan datos en la solicitud"]);
-                exit;
-            }
-
-
-            // Obtengo los datos del formato json
-            $usuario = $data['usuario'];
-            $contrasena = $data['contrasena'];
-            $confirmarContrasena = $data['confirmarContrasena'];
-
-
-            // compara las contraseñas
-            if (!comparePassword($contrasena,$confirmarContrasena)) {
-                header('HTTP/1.1 404 No coincide la contrasena');
-                echo json_encode(["error" => "Las contrasenas no coinciden"]);
-                exit;
-            }
-
-            if (!sonCadenas([$usuario,$contrasena])) {
-                header('HTTP/1.1 400 No son string');
-                echo json_encode(["error"=> "Solo se permite string"]);
-                exit;
-            }
-
-            //verifica si se obtuvo la contraseña de la base de datos
-            $contrasenaBD = consultarContraseña(($usuario));
-
-            if ($contrasenaBD) {
-                if (!verificarContrasena($contrasena,$contrasenaBD)) {
-                    header('HTTP/1.1 404 contrasena incorrecta');
-                    echo json_encode(["error"=> "la contraseña no coincide"]);
-                    exit;
-                }
-            }else{
-                header('HTTP/1.1 500 No se obtuvo la contraseña');
-                echo json_encode(["error"=> "Error al consultar la contrasena"]);
-                exit;
-            }
-
-
-
-
-
         try {
+
+           // Obtener el cuerpo de la solicitud en formato JSON
+           $data = json_decode(file_get_contents("php://input"), true);
+
+           // Verificar si los datos necesarios están presentes
+           if (!isset($data['usuario'], $data['contrasena'], $data['confirmarContrasena'])) {
+               header('HTTP/1.1 400 Bad Request');
+               echo json_encode(["error" => "Faltan datos en la solicitud"]);
+               exit;
+           }
+
+
+           // Obtengo los datos del formato json
+           $usuario = $data['usuario'];
+           $contrasena = $data['contrasena'];
+           $confirmarContrasena = $data['confirmarContrasena'];
+
+
+           // compara las contraseñas
+           if (!comparePassword($contrasena,$confirmarContrasena)) {
+               header('HTTP/1.1 404 No coincide la contrasena');
+               echo json_encode(["error" => "Las contrasenas no coinciden"]);
+               exit;
+           }
+
+           if (!sonCadenas([$usuario,$contrasena])) {
+               header('HTTP/1.1 400 No son string');
+               echo json_encode(["error"=> "Solo se permite string"]);
+               exit;
+           }
+
+           //verifica si se obtuvo la contraseña de la base de datos
+           $contrasenaBD = consultarContraseña(($usuario));
+
+           if ($contrasenaBD) {
+               if (!verificarContrasena($contrasena,$contrasenaBD)) {
+                   header('HTTP/1.1 404 contrasena incorrecta');
+                   echo json_encode(["error"=> "la contraseña no coincide"]);
+                   exit;
+               }
+           }else{
+               header('HTTP/1.1 500 No se obtuvo la contraseña');
+               echo json_encode(["error"=> "Error al consultar la contrasena"]);
+               exit;
+           }
 
             $rol = 1;
 

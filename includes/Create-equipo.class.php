@@ -17,6 +17,8 @@ require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 class Create_equipo{
 
     public static function crearEquipo($token){
+        try {
+
         // Obtener el cuerpo de la solicitud en formato JSON
         $data = json_decode(file_get_contents("php://input"), true);
 
@@ -27,8 +29,10 @@ class Create_equipo{
         }
 
         //verifica que el token no haya vencido
-        if (!verificarToken($token)) {
-            return sendResponse(400, ["Error" => "el token expiro"]);
+        $tokenValidation = validarTokenEnClase($token);
+
+        if (!$tokenValidation ) {
+            return sendResponse(400, ["Error" => "Token vencido"]);
         }
 
         // Obtengo los datos del formato json
@@ -88,7 +92,6 @@ class Create_equipo{
         $ubicacion_equipo = $resultado['datos']['ubicacion_equipo'];
         $estado_equipo = $resultado['datos']['estado_equipo'];
 
-        try {
             $database = new Database();
             $conn = $database->getConnection();
             $stmt = $conn->prepare('INSERT INTO EQUIPOS (nombre_equipo,caracteristicas_del_sistema,fecha_de_adquisicion,costo_adquisicion,valor_residual,imagen_equipo,descripcion_equipo,modelo_equipo,numero_serial,proveedor_equipo,id_agente,ubicacion_equipo,vida_util_equipo,id_categoria,estado_equipo,depreciacion_equipo ) VALUES(:nombre_equipo,:caracteristicas_del_sistema,:fecha_de_adquisicion,:costo_adquisicion,:valor_residual,:imagen_equipo,:descripcion_equipo,:modelo_equipo,:numero_serial,:proveedor_equipo,:id_agente,:ubicacion_equipo,:vida_util_equipo,:id_categoria,:estado_equipo,:depreciacion_equipo)');

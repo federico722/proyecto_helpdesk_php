@@ -1,6 +1,5 @@
 <?php
 
-
 require_once 'Database.class.php';
 require_once __DIR__ . '..\..\logica\confirPassword.php';
 require_once __DIR__ . '..\..\logica\confirmarCadena.php';
@@ -18,17 +17,21 @@ require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 class Create_servicio{
 
     public static function crearServicio($token){
+
+        try {
         // Obtener el cuerpo de la solicitud en formato JSON
         $data = json_decode(file_get_contents("php://input"), true);
 
-          // Verificar si los datos necesarios están presentes
-          if (!isset($data['nombre_servicio'],$data['descripcion_servicio'],$data['fecha_inicio'],$data['frecuencia_facturacion'],$data['costo_servicio'],$data['proveedor_servicio'],$data['estado_servicio'],$data['url_acceso'],$data['tipo_servicio'],$data['id_equipo'])) {
-            return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+        // Verificar si los datos necesarios están presentes
+        if (!isset($data['nombre_servicio'],$data['descripcion_servicio'],$data['fecha_inicio'],$data['frecuencia_facturacion'],$data['costo_servicio'],$data['proveedor_servicio'],$data['estado_servicio'],$data['url_acceso'],$data['tipo_servicio'],$data['id_equipo'])) {
+        return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
         }
 
         //verifica que el token no haya vencido
-        if (!verificarToken($token)) {
-            return sendResponse(400, ["Error" => "el token expiro"]);
+        $tokenValidation = validarTokenEnClase($token);
+
+        if (!$tokenValidation ) {
+            return sendResponse(400, ["Error" => "Token vencido"]);
         }
 
         // Obtengo los datos del formato json
@@ -47,28 +50,28 @@ class Create_servicio{
 
         // verifica si son numeros
         if (!sonNumerico([$costo_servicio,$id_equipo])) {
-            return sendResponse(400, [
-                "Error" => "Datos invalidos, solo se permiten valores numericos"
-                ]);
+        return sendResponse(400, [
+            "Error" => "Datos invalidos, solo se permiten valores numericos"
+            ]);
         }
 
         // verifica si son fechas
         if (!validarFecha([$fecha_inicio])) {
-            return sendResponse(400,['Error' => "Datos invalidos, solo se permite la fecha en el formato Y-m-d"]);
+        return sendResponse(400,['Error' => "Datos invalidos, solo se permite la fecha en el formato Y-m-d"]);
         }
 
         // verificar si son cadenas
         $camposValidar = [
-            'nombre_servicio' => $nombre_servicio, 'descripcion_servicio' => $descripcion_servicio,'frecuencia_facturacion' => $frecuencia_facturacion, 'proveedor_servicio' => $proveedor_servicio, 'estado_servicio' => $estado_servicio, 'url_acceso' => $url_acceso, 'tipo_servicio' => $tipo_servicio ];
+        'nombre_servicio' => $nombre_servicio, 'descripcion_servicio' => $descripcion_servicio,'frecuencia_facturacion' => $frecuencia_facturacion, 'proveedor_servicio' => $proveedor_servicio, 'estado_servicio' => $estado_servicio, 'url_acceso' => $url_acceso, 'tipo_servicio' => $tipo_servicio ];
 
-         //validar los campos
-         $resultado = validarArrayFlexible($camposValidar, 1, 1000);
+        //validar los campos
+        $resultado = validarArrayFlexible($camposValidar, 1, 1000);
 
-         if (!$resultado['valido']) {
-            return sendResponse(400, [
-            "Error" => "Datos invalidos",
-            "detalles" => $resultado['errores']
-            ]);
+        if (!$resultado['valido']) {
+        return sendResponse(400, [
+        "Error" => "Datos invalidos",
+        "detalles" => $resultado['errores']
+        ]);
         }
 
         $nombre_servicio = $resultado['datos']['nombre_servicio'];
@@ -79,7 +82,7 @@ class Create_servicio{
         $url_acceso = $resultado['datos']['url_acceso'];
         $tipo_servicio = $resultado['datos']['tipo_servicio'];
 
-        try {
+
             $database = new Database();
             $conn = $database->getConnection();
             $stmt = $conn->prepare('INSERT INTO SERVICIOS (nombre_servicio, descripcion_servicio,fecha_inicio, frecuencia_facturacion,costo_servicio ,proveedor_servicio, estado_servicio,  url_acceso, tipo_servicio, id_equipo) VALUES(:nombre_servicio, :descripcion_servicio,:fecha_inicio ,:frecuencia_facturacion, :costo_servicio ,:proveedor_servicio, :estado_servicio,:url_acceso, :tipo_servicio, :id_equipo)');

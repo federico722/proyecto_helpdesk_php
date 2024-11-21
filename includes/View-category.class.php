@@ -17,12 +17,15 @@ require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 class view_category{
     public static function ver_categoria($token){
 
-        //verifica que el token no haya vencido
-        if (!verificarToken($token)) {
-            return sendResponse(400, ["Error" => "el token expiro"]);
-        }
-
         try {
+            //verifica que el token no haya vencido
+            $tokenValidation = validarTokenEnClase($token);
+
+            if (!$tokenValidation ) {
+                return sendResponse(400, ["Error" => "Token vencido"]);
+            }
+
+
             $database = new Database();
             $conn = $database->getConnection();
             $stmt = $conn->prepare('SELECT nombre_categoria FROM CATEGORIAS');

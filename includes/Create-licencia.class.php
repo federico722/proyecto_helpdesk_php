@@ -17,6 +17,7 @@ require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 class Create_licencia{
 
     public static function crearLicencia($token){
+        try {
         // Obtener el cuerpo de la solicitud en formato JSON
         $data = json_decode(file_get_contents("php://input"), true);
 
@@ -26,8 +27,10 @@ class Create_licencia{
         }
 
         //verifica que el token no haya vencido
-        if (!verificarToken($token)) {
-            return sendResponse(400, ["Error" => "el token expiro"]);
+        $tokenValidation = validarTokenEnClase($token);
+
+        if (!$tokenValidation ) {
+            return sendResponse(400, ["Error" => "Token vencido"]);
         }
 
         // Obtengo los datos del formato json
@@ -80,7 +83,7 @@ class Create_licencia{
         $estado_licencia = $resultado['datos']['estado_licencia'];
         $duracion_licencia =$resultado['datos']['duracion_licencia'];
 
-        try {
+
             $database = new Database();
             $conn = $database->getConnection();
             $stmt = $conn->prepare('INSERT INTO LICENCIAS (nombre_licencia,descripcion_licencia, numero_licencia,fecha_adquisicion,tipo_licencia,costo_licencia, id_equipo, usuarios_permitidos, proveedor_licencia, estado_licencia, duracion_licencia) VALUES(:nombre_licencia, :descripcion_licencia,:numero_licencia ,:fecha_adquisicion, :tipo_licencia ,:costo_licencia, :id_equipo,:usuarios_permitidos, :proveedor_licencia, :estado_licencia, :duracion_licencia)');

@@ -1,4 +1,3 @@
-
 <?php
 
 require_once '..\..\includes\View-element-licencia.class.php';

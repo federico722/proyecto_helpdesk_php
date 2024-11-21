@@ -15,29 +15,33 @@ require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 
 class Create_Category{
     public static function crearCategoriaEquipo($token){
+
+        try {
         // Obtener el cuerpo de la solicitud en formato JSON
         $data = json_decode(file_get_contents("php://input"), true);
 
-          // Verificar si los datos necesarios están presentes
+        // Verificar si los datos necesarios están presentes
         if (!isset($data['nombre_categoria'])) {
-            return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+        return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
         }
 
         $nombre_categoria = $data['nombre_categoria'];
 
         //verifica que el token no haya vencido
-        if (!verificarToken($token)) {
-            return sendResponse(400, ["Error" => "el token expiro"]);
+        $tokenValidation = validarTokenEnClase($token);
+
+        if (!$tokenValidation ) {
+            return sendResponse(400, ["Error" => "Token vencido"]);
         }
 
 
         // verificar si son cadenas
         if (!sonCadenas([$nombre_categoria])) {
-             return sendResponse(400, ["Error" => "formato incorrecto no se permite valores numericos"]);
+        return sendResponse(400, ["Error" => "formato incorrecto no se permite valores numericos"]);
         }
 
         $camposValidar = [
-         'nombre_categoria' => $nombre_categoria
+        'nombre_categoria' => $nombre_categoria
         ];
 
         //validar los campos
@@ -45,17 +49,15 @@ class Create_Category{
 
 
         if (!$resultado['valido']) {
-            return sendResponse(400, [
-            "Error" => "Datos invalidos",
-            "detalles" => $resultado['errores']
-            ]);
+        return sendResponse(400, [
+        "Error" => "Datos invalidos",
+        "detalles" => $resultado['errores']
+        ]);
         }
 
 
-         // Usar los datos validados y limpios
-         $nombre_categoria = $resultado['datos']['nombre_categoria'];
-
-        try {
+        // Usar los datos validados y limpios
+        $nombre_categoria = $resultado['datos']['nombre_categoria'];
 
             $database = new Database();
             $conn = $database->getConnection();

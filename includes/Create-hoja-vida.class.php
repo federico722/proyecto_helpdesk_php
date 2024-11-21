@@ -17,6 +17,8 @@ require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 class Create_paper_life{
 
     public static function crearHojaVida($token){
+
+        try {
         // Obtener el cuerpo de la solicitud en formato JSON
         $data = json_decode(file_get_contents("php://input"), true);
 
@@ -26,8 +28,10 @@ class Create_paper_life{
         }
 
         //verifica que el token no haya vencido
-        if (!verificarToken($token)) {
-            return sendResponse(400, ["Error" => "el token expiro"]);
+        $tokenValidation = validarTokenEnClase($token);
+
+        if (!$tokenValidation ) {
+            return sendResponse(400, ["Error" => "Token vencido"]);
         }
 
         // Obtengo los datos del formato json
@@ -66,7 +70,7 @@ class Create_paper_life{
         $descripcion_anotaciones = $resultado['datos']['descripcion_anotaciones'];
         $author_anotacion = $resultado['datos']['author_anotacion'];
 
-        try {
+
             $database = new Database();
             $conn = $database->getConnection();
             $stmt = $conn->prepare('INSERT INTO HOJAS_VIDA (fecha_anotacion, descripcion_anotaciones,id_equipo,author_anotacion) VALUES(:fecha_anotacion,:descripcion_anotaciones,:id_equipo, :author_anotacion)');
