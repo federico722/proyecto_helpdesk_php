@@ -34,13 +34,13 @@ class Create_level{
         }
 
         // Obtengo los datos del formato json
-        $nombre_etiqueta = $data['nombre_nivel'];
-        $descripcion_etiqueta	= $data['descripcion_nivel'];
+        $nombre_nivel = $data['nombre_nivel'];
+        $descripcion_nivel	= $data['descripcion_nivel'];
 
 
 
         // verificar si son cadenas
-        if (!sonCadenas([$nombre_etiqueta, $descripcion_etiqueta])) {
+        if (!sonCadenas([$nombre_nivel, $descripcion_nivel])) {
             return sendResponse(400, [
                 "Error" => "Datos invalidos",
                 ]);
@@ -49,22 +49,22 @@ class Create_level{
 
         $database = new Database();
         $conn = $database->getConnection();
-        $stmt = $conn->prepare('INSERT INTO ETIQUETAS (nombre_etiqueta,descripcion_etiqueta ) VALUES(:nombre_etiqueta, :descripcion_etiqueta)');
-        $stmt->bindParam(':nombre_etiqueta',$nombre_etiqueta);
-        $stmt->bindParam(':descripcion_etiqueta',$descripcion_etiqueta);
+        $stmt = $conn->prepare('INSERT INTO NIVELES (nombre_nivel,descripcion_nivel ) VALUES(:nombre_nivel, :descripcion_nivel)');
+        $stmt->bindParam(':nombre_nivel',$nombre_nivel);
+        $stmt->bindParam(':descripcion_nivel',$descripcion_nivel);
 
 
 
         if($stmt->execute()){
         // Responder con éxito
-        return sendResponse(200, ["success" => "Etiqueta guardada con exito."]);
+        return sendResponse(200, ["success" => "Nivel guardada con exito."]);
         }else{
             // Responder con error 500 si la inserción falla
-        return sendResponse(500, ["error" => "No se pudo guardar la Etiqueta"]);
+        return sendResponse(500, ["error" => "No se pudo guardar el nivel"]);
         }
 
         } catch (\Throwable $th) {
-                      error_log('Error al agregar el area: ' . $th->getMessage());
+                      error_log('Error al agregar el nivel: ' . $th->getMessage());
             return sendResponse(500, [
                 "error" => "ocurrio un error interno del servidor",
                 "detalles" => $th->getMessage()
