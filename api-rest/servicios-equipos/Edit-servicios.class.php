@@ -1,6 +1,6 @@
 <?php
 
-require_once '..\..\includes\Edit-licencia.class.php';
+require_once '..\..\includes\Edit-servicio.class.php';
 require_once '../../logica/formatoRespuesta.php';
 
 
@@ -21,7 +21,7 @@ try {
 
             if (strcasecmp($type, 'Bearer') === 0) {
                 // Llama a la función de verificación con el token extraído
-                Edit_licencia::Editar_licencia($token);
+                Edit_servico::Editar_servicio($token);
             }else {
                 sendResponse(400, ['Error' => "El tipo de token debe ser Bearer"]);
             }

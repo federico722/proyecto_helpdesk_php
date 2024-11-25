@@ -61,6 +61,7 @@ class Create_user{
              // Responder con éxito
              header('HTTP/1.1 200 OK');
              echo json_encode(["success" => "Usuario creado con exito"]);
+             echo json_encode(["Accept" => true ]);
             }else{
                 // Responder con error 500 si la inserción falla
                 header('HTTP/1.1 500 Error interno del servidor');

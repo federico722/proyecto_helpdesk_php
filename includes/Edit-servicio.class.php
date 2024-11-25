@@ -75,8 +75,8 @@ class Edit_servico{
          $fracuencia_facturacion = $resultado['datos']['fracuencia_facturacion'];
          $estado_servicio = $resultado['datos']['estado_servicio'];
          $url_acceso = $resultado['datos']['url_acceso'];
-         $tipo_servicio = $resultado['datos']['estado_licencia'];
-         $nombre_servicio = $resultado['datos']['tipo_licencia'];
+         $tipo_servicio = $resultado['datos']['tipo_servicio'];
+         $nombre_servicio = $resultado['datos']['nombre_servicio'];
 
          if (!$resultado['valido']) {
             return sendResponse(400, [
@@ -94,16 +94,19 @@ class Edit_servico{
         estado_servicio = :estado_servicio,
         url_acceso = :url_acceso,
         tipo_servicio = :tipo_servicio,
-        nombre_servicio = :estado_licencia  WHERE  id_licencia = :id_licencia');
+        costo_servicio = :costo_servicio,
+        nombre_servicio = :nombre_servicio  WHERE  id_servicio = :id_servicio');
         $stmt->bindParam(':descripcion_servicio',$descripcion_servicio);
         $stmt->bindParam(':fecha_inicio',$fecha_inicio);
         $stmt->bindParam(':proveedor_servicio',$proveedor_servicio);
-        $stmt->bindParam(':estado_servicio',$estado_servicio);
         $stmt->bindParam(':frecuencia_facturacion',$frecuencia_facturacion);
+        $stmt->bindParam(':estado_servicio',$estado_servicio);
+        $stmt->bindParam(':estado_servicio',$estado_servicio);
+        $stmt->bindParam(':url_acceso',$url_acceso);
         $stmt->bindParam(':tipo_servicio',$tipo_servicio);
         $stmt->bindParam(':costo_servicio',$costo_servicio);
         $stmt->bindParam(':nombre_servicio',$nombre_servicio);
-
+        $stmt->bindParam(':id_servicio',$id_servicio);
 
        if($stmt->execute()){
 

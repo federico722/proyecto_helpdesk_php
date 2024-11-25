@@ -2,11 +2,11 @@
 
 require_once __DIR__ . '..\..\includes\Database.class.php';
 
-function consultarArea($nombre_area,$id_area){
+function consultarNombreArea($nombre_area,$id_area){
     try {
         $database = new Database();
         $conn = $database->getConnection();
-        $stmt = $conn->prepare('SELECT nombre_area FROM AREAS WHERE  WHERE id_area = :id_area AND nombre_area = :nombre_area');
+        $stmt = $conn->prepare('SELECT nombre_area FROM AREAS WHERE id_area = :id_area AND nombre_area = :nombre_area');
         $stmt->bindParam(':id_area', $id_area);
         $stmt->bindParam(':nombre_area', $nombre_area);
 

@@ -13,7 +13,7 @@ require_once __DIR__ . '..\..\logica\confirmarInt.php';
 require_once __DIR__ . '..\..\credentials\verificar-token.php';
 require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
-require_once __DIR__ . '..\..\consultas-usuario\consultar-nombre-agente.php';
+require_once __DIR__ . '..\..\consultas-usuario\consultar_area-usuario.php';
 
 class Edit_area{
     public static function Editar_area($token){
@@ -25,8 +25,7 @@ class Edit_area{
 
         // Verificar si los datos necesarios están presentes
         if (!isset($data['nombre_area'],$data['id_area'])) {
-
-        return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+            return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
         }
 
             //verifica que el token no haya vencido
@@ -64,54 +63,28 @@ class Edit_area{
             ]);
         }
 
-
+        //validar que no este el nuevo nombre de area
+        if (!consultarNombreArea($nombre_area,$id_area)) {
+            return sendResponse(400,["Error" => "Nombre repetido"]);
+        }
 
         $database = new Database();
         $conn = $database->getConnection();
-        $stmt = $conn->prepare('UPDATE EQUIPOS SET nombre_equipo = :nombre_equipo ,
-        caracteristicas_del_sistema = :caracteristicas_del_sistema ,
-        fecha_de_adquisicion = :fecha_de_adquisicion,
-        costo_adquisicion = :costo_adquisicion,
-        valor_residual = :valor_residual,
-        imagen_equipo = :imagen_equipo,
-        descripcion_equipo = :descripcion_equipo,
-        modelo_equipo = :modelo_equipo,
-        numero_serial = :numero_serial,
-        proveedor_equipo = :proveedor_equipo,
-        id_agente = :id_agente,
-        ubicacion_equipo = :ubicacion_equipo,
-        vida_util_equipo = :vida_util_equipo,
-        estado_equipo = :estado_equipo,
-        depreciacion_equipo = :depreciacion_equipo WHERE  id_equipo = :id_equipo');
-        $stmt->bindParam(':nombre_equipo',$nombre_equipo);
-        $stmt->bindParam(':caracteristicas_del_sistema',$caracteristicas_del_sistema);
-        $stmt->bindParam(':fecha_de_adquisicion',$fecha_de_adquisicion);
-        $stmt->bindParam(':costo_adquisicion', $costo_adquisicion);
-        $stmt->bindParam(':valor_residual', $valor_residual);
-        $stmt->bindParam(':imagen_equipo', $imagen_equipo);
-        $stmt->bindParam(':descripcion_equipo', $descripcion_equipo);
-        $stmt->bindParam(':modelo_equipo', $modelo_equipo);
-        $stmt->bindParam(':numero_serial', $numero_serial);
-        $stmt->bindParam(':proveedor_equipo', $proveedor_equipo);
-        $stmt->bindParam(':id_agente', $id_agente);
-        $stmt->bindParam(':ubicacion_equipo', $ubicacion_equipo);
-        $stmt->bindParam(':vida_util_equipo', $vida_util_equipo);
-        $stmt->bindParam(':estado_equipo', $estado_equipo);
-        $stmt->bindParam(':depreciacion_equipo', $depreciacion_equipo);
-        $stmt->bindParam(':id_equipo',$id_equipo);
-
+        $stmt = $conn->prepare('UPDATE AREAS SET nombre_area = :nombre_area WHERE  id_area = :id_area');
+        $stmt->bindParam(':id_area',$id_area);
+        $stmt->bindParam(':nombre_area',$nombre_area);
 
             if($stmt->execute()){
                 // Responder con los datos de categorías
             return sendResponse(200, [
-                "Success" => "Equipo actualizado con exito",
+                "Success" => "nombre de area actualizado con exito",
             ]);
                }else{
                    // Responder con error 500 si la inserción falla
-                return sendResponse(500, ["error" => "No se pudo editar el equipo"]);
+                return sendResponse(500, ["error" => "No se pudo editar el nombre de area"]);
               }
         } catch (\Throwable $th) {
-            error_log('Error al editar el equipo: ' . $th->getMessage());
+            error_log('Error al editar el nombre de area: ' . $th->getMessage());
             return sendResponse(500, [
                 "error" => "ocurrio un error interno del servidor",
                 "detalles" => $th->getMessage()
