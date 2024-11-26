@@ -4,6 +4,7 @@ require_once 'Database.class.php';
 require_once __DIR__ . '..\..\logica\confirPassword.php';
 require_once __DIR__ . '..\..\logica\confirmarCadena.php';
 require_once __DIR__ . '..\..\consultas-usuario\Consultar_contrasena.php';
+require_once __DIR__ . '..\..\consultas-usuario\consultar_rol.php';
 require_once __DIR__ . '..\..\logica\verificarContrasena.php';
 require_once __DIR__ . '..\..\vendor/autoload.php';
 require_once __DIR__ . '..\..\credentials\create-token.php';
@@ -11,8 +12,8 @@ require_once __DIR__ . '..\..\credentials\obtener-payload-token.php';
 require_once __DIR__ . '..\..\logica\formatoRespuesta.php';
 
 
-class Login{
-    public static function iniciar_sesion(){
+class Login_admin{
+    public static function iniciar_sesion_admin(){
             try {
           // Obtener el cuerpo de la solicitud en formato JSON
          $data = json_decode(file_get_contents("php://input"), true);
@@ -31,6 +32,14 @@ class Login{
            $contrasena = $data['contrasena'];
            $confirmarContrasena = $data['confirmarContrasena'];
 
+           $rol = consultarRol($usuario);
+
+         if ($rol !== "admin") {
+            header('HTTP/1.1 404 No coincide el rol');
+            echo json_encode(["errorRol" => "El rol no es administrador"]);
+            exit;
+         }
+
            // compara las contraseñas
           if (!comparePassword($contrasena,$confirmarContrasena)) {
               header('HTTP/1.1 404 No coincide la contrasena');
@@ -47,6 +56,9 @@ class Login{
 
                 //obtenemos la contraseña del usuario (si existe) en la base
                 $contrasenaObtenida = consultarContraseña($usuario);
+
+                //verificamos el rol
+
 
                 //verificamos que si obtenemos la contraseña
                 if ($contrasenaObtenida === false) {

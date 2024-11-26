@@ -55,13 +55,12 @@ class Create_user{
             $stmt->bindParam(':contrasenaHash',$contrasenaHash);
             $stmt->bindParam(':correo',$correo);
             $stmt->bindParam(':id_rol',$rol); // Agregar esta línea
-            var_dump(['usuario' => $usuario, 'contrasena' => $contrasenaHash, 'correo' => $correo, 'id_rol' => $rol]);
+           // var_dump(['usuario' => $usuario, 'contrasena' => $contrasenaHash, 'correo' => $correo, 'id_rol' => $rol]);
 
             if($stmt->execute()){
              // Responder con éxito
              header('HTTP/1.1 200 OK');
-             echo json_encode(["success" => "Usuario creado con exito"]);
-             echo json_encode(["Accept" => true ]);
+             echo json_encode(["success" => "Usuario creado con exito", "Accept" => true]);
             }else{
                 // Responder con error 500 si la inserción falla
                 header('HTTP/1.1 500 Error interno del servidor');
