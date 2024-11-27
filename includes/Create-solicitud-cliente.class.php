@@ -55,20 +55,38 @@ class Create_solicitud_cliente{
         $nombre_solicitante = $resultado['datos']['nombre_solicitante'];
         $asunto = $resultado['datos']['asunto'];
 
-
+        //iniciar conexion a la base de datos
         $database = new Database();
         $conn = $database->getConnection();
-        $stmt = $conn->prepare('INSERT INTO SOLICITUD_CLIENTES (nombre_solicitante,asunto,fecha_solicitud) VALUES(:nombre_solicitante,:asunto,:fecha_solicitud)');
-        $stmt->bindParam(':nombre_solicitante',$nombre_solicitante);
-        $stmt->bindParam(':asunto',$asunto);
-        $stmt->bindParam(':fecha_solicitud',$fecha_solicitud);
 
-        if($stmt->execute()){
-        // Responder con éxito
-        return sendResponse(200, ["success" => "Solicitud guardada con exito."]);
+         // Iniciar una transacción
+         $conn->beginTransaction();
+
+        $stmtSolicitud  = $conn->prepare('INSERT INTO SOLICITUD_CLIENTES (nombre_solicitante,asunto,fecha_solicitud) VALUES(:nombre_solicitante,:asunto,:fecha_solicitud)');
+        $stmtSolicitud->bindParam(':nombre_solicitante',$nombre_solicitante);
+        $stmtSolicitud->bindParam(':asunto',$asunto);
+        $stmtSolicitud->bindParam(':fecha_solicitud',$fecha_solicitud);
+
+        if($stmtSolicitud->execute()){
+        // Obtener el ID de la solicitud recién insertada
+        $idSolicitud = $conn->lastInsertId();
+
+        //Insertar en tickets
+        $stmtTicket = $conn->prepare(
+            'INSERT INTO TICKETS (estado, id_solicitud) VALUES ("Abrir", :id_solicitud)'
+        );
+        $stmtTicket->bindParam(':id_solicitud', $idSolicitud);
+
+        if ($stmtTicket->execute()) {
+            $conn->commit();
+            return sendResponse(200, ["success" => "Solicitud y ticket guardados con éxito."]);
         }else{
-            // Responder con error 500 si la inserción falla
-        return sendResponse(500, ["error" => "No se pudo guardar la solicitud"]);
+            $conn->rollBack();
+            return sendResponse(500, ["No se pudo guardar el ticket"]);
+        }
+        }else{
+        // Responder con error 500 si la inserción falla
+          return sendResponse(500, ["error" => "No se pudo guardar la solicitud"]);
         }
 
         } catch (\Throwable $th) {

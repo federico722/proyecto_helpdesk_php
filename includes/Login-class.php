@@ -41,7 +41,7 @@ class Login{
           // verificar si son cadenas
           if (!sonCadenas([$usuario,$contrasena])) {
               header('HTTP/1.1 404 No son string');
-              echo json_encode(["error" => "Solo se permite string y el correo debe ser valido"]);
+              echo json_encode(["errorString" => "Solo se permite string y el correo debe ser valido"]);
               exit;
           }
 
@@ -50,7 +50,7 @@ class Login{
 
                 //verificamos que si obtenemos la contraseña
                 if ($contrasenaObtenida === false) {
-                    return sendResponse(404, ["error" => "Usuario no encontrado"]);
+                    return sendResponse(404, ["errorNoEncontrado" => "Usuario no encontrado"]);
                 }
 
                 //verificamos la contraseña del usuario con la contraseña de la base de datos
@@ -64,7 +64,7 @@ class Login{
                     ]);
 
                 }else{
-                  return sendResponse(401, ["error" => "Contraseña incorrecta"]);
+                  return sendResponse(401, ["errorContrasenaIncorrecta" => "Contraseña incorrecta"]);
                 }
 
             } catch (\Throwable $th) {

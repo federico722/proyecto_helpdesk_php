@@ -32,6 +32,29 @@ class Login_admin{
            $contrasena = $data['contrasena'];
            $confirmarContrasena = $data['confirmarContrasena'];
 
+           // verificar si son cadenas
+           if (!sonCadenas([$usuario,$contrasena])) {
+            header('HTTP/1.1 404 No son string');
+            echo json_encode(["errorString" => "Solo se permite string y el correo debe ser valido"]);
+            exit;
+        }
+
+        //obtenemos la contraseña del usuario (si existe) en la base
+         $contrasenaObtenida = consultarContraseña($usuario);
+
+        //verificamos que si obtenemos la contraseña
+         if ($contrasenaObtenida === false) {
+             return sendResponse(404, ["errorNoEncontrado" => "Usuario no encontrado"]);
+        }
+
+          // compara las contraseñas
+        if (!comparePassword($contrasena,$confirmarContrasena)) {
+             header('HTTP/1.1 404 No coincide la contrasena');
+            echo json_encode(["errorPassword" => "Las contrasenas no coinciden"]);
+            exit;
+        }
+
+           //verificamos el rol
            $rol = consultarRol($usuario);
 
          if ($rol !== "admin") {
@@ -40,30 +63,7 @@ class Login_admin{
             exit;
          }
 
-           // compara las contraseñas
-          if (!comparePassword($contrasena,$confirmarContrasena)) {
-              header('HTTP/1.1 404 No coincide la contrasena');
-              echo json_encode(["errorPassword" => "Las contrasenas no coinciden"]);
-              exit;
-          }
 
-          // verificar si son cadenas
-          if (!sonCadenas([$usuario,$contrasena])) {
-              header('HTTP/1.1 404 No son string');
-              echo json_encode(["error" => "Solo se permite string y el correo debe ser valido"]);
-              exit;
-          }
-
-                //obtenemos la contraseña del usuario (si existe) en la base
-                $contrasenaObtenida = consultarContraseña($usuario);
-
-                //verificamos el rol
-
-
-                //verificamos que si obtenemos la contraseña
-                if ($contrasenaObtenida === false) {
-                    return sendResponse(404, ["error" => "Usuario no encontrado"]);
-                }
 
                 //verificamos la contraseña del usuario con la contraseña de la base de datos
                 if (verificarContrasena($contrasena, $contrasenaObtenida)) {
@@ -76,7 +76,7 @@ class Login_admin{
                     ]);
 
                 }else{
-                  return sendResponse(401, ["error" => "Contraseña incorrecta"]);
+                  return sendResponse(401, ["errorContrasenaIncorrecta" => "Contraseña incorrecta"]);
                 }
 
             } catch (\Throwable $th) {

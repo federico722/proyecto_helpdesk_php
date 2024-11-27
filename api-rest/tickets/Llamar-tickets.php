@@ -1,14 +1,15 @@
 <?php
 
-require_once '..\..\includes\Create-servicio.class.php';
+require '..\..\includes\View-tickets.class.php';
 require_once '../../logica/formatoRespuesta.php';
 
-
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Authorization');
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');  // Agregar OPTIONS
+header('Access-Control-Allow-Credentials: true'); // Si es necesario para permitir credenciales
 
 try {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // getallheaders() para obtener los encabezados
         $headers = getallheaders();
@@ -21,7 +22,7 @@ try {
 
             if (strcasecmp($type, 'Bearer') === 0) {
                 // Llama a la función de verificación con el token extraído
-                Create_servicio::crearServicio($token);
+                view_tickets::ver_tickets($token);
             }else {
                 sendResponse(400, ['Error' => "El tipo de token debe ser Bearer"]);
             }
