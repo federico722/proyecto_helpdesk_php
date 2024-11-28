@@ -15,7 +15,7 @@ require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 
 class view_tickets{
-    public static function ver_tickets($token,$estado = null){
+    public static function ver_tickets($token,$estado = null, $nivel = null, $area = null){
 
         try {
 
@@ -31,6 +31,8 @@ class view_tickets{
 
          // Usar el estado del parámetro o del JSON
         $estadoTicket = $estado ?? ($data['estado'] ?? null);
+        $nivelTicket = $nivel ?? ($data['nivel'] ?? null);
+        $areaTicket = $area ?? ($data['area'] ?? null);
 
         // verificar si son cadenas
          if ($estadoTicket !== null && !sonCadenas([$estadoTicket])) {
@@ -41,8 +43,11 @@ class view_tickets{
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('CALL ObtenerTicketsPorEstado(:estadoTicket)');
+            $stmt = $conn->prepare('CALL ObtenerTicketsPorEstado(:estadoTicket, :nivelTicket, :areaTicket)');
             $stmt->bindParam(':estadoTicket',$estadoTicket);
+            $stmt->bindParam(':nivelTicket',$nivelTicket);
+            $stmt->bindParam(':areaTicket',$areaTicket);
+
 
             if($stmt->execute()){
                 // Obtener todos los resultados
@@ -50,7 +55,10 @@ class view_tickets{
 
                 // Responder con los datos de categorías
             return sendResponse(200, [
-                "tickets" => $tickets
+                "tickets" => $tickets,
+                "estado" => $estadoTicket,
+                "nivel" => $nivelTicket,
+                "area" => $areaTicket
             ]);
                }else{
                    // Responder con error 500 si la inserción falla

@@ -73,7 +73,7 @@ class Create_solicitud_cliente{
 
         //Insertar en tickets
         $stmtTicket = $conn->prepare(
-            'INSERT INTO TICKETS (estado, id_solicitud) VALUES ("Abrir", :id_solicitud)'
+            'INSERT INTO TICKETS (estado, id_solicitud,id_nivel) VALUES ("Abrir", :id_solicitud, 1 )'
         );
         $stmtTicket->bindParam(':id_solicitud', $idSolicitud);
 
