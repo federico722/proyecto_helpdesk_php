@@ -15,7 +15,7 @@ require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 
 class view_tickets{
-    public static function ver_tickets($token,$estado = null, $nivel = null, $area = null){
+    public static function ver_tickets($token,$estado = null, $nivel = null, $area = null, $desde = null, $hasta = null ){
 
         try {
 
@@ -33,6 +33,8 @@ class view_tickets{
         $estadoTicket = $estado ?? ($data['estado'] ?? null);
         $nivelTicket = $nivel ?? ($data['nivel'] ?? null);
         $areaTicket = $area ?? ($data['area'] ?? null);
+        $desdeTicket = $desde ?? ($data['desde'] ?? null);
+        $hastaTicket = $hasta ?? ($hasta['hasta'] ?? null);
 
         // verificar si son cadenas
          if ($estadoTicket !== null && !sonCadenas([$estadoTicket])) {
@@ -43,10 +45,12 @@ class view_tickets{
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('CALL ObtenerTicketsPorEstado(:estadoTicket, :nivelTicket, :areaTicket)');
+            $stmt = $conn->prepare('CALL ObtenerTicketsPorEstado(:estadoTicket, :nivelTicket, :areaTicket, :desdeTicket, :hastaTicket)');
             $stmt->bindParam(':estadoTicket',$estadoTicket);
             $stmt->bindParam(':nivelTicket',$nivelTicket);
             $stmt->bindParam(':areaTicket',$areaTicket);
+            $stmt->bindParam(':desdeTicket',$desdeTicket);
+            $stmt->bindParam(':hastaTicket',$hastaTicket);
 
 
             if($stmt->execute()){
@@ -58,7 +62,9 @@ class view_tickets{
                 "tickets" => $tickets,
                 "estado" => $estadoTicket,
                 "nivel" => $nivelTicket,
-                "area" => $areaTicket
+                "area" => $areaTicket,
+                "desde" => $desdeTicket,
+                "hasta" => $hastaTicket
             ]);
                }else{
                    // Responder con error 500 si la inserción falla

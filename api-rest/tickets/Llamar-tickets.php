@@ -8,11 +8,11 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');  // Agregar OPTIONS
 header('Access-Control-Allow-Credentials: true'); // Si es necesario para permitir credenciales
 
-        // Manejar solicitud OPTIONS
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    // Manejar solicitud OPTIONS
+     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             http_response_code(200);
             exit();
-        }
+    }
 
 
 
@@ -33,6 +33,8 @@ try {
                  $estado = $_GET['estado'] ?? null;
                  $nivel = $_GET['nivel'] ?? null;
                  $area = $_GET['area'] ?? null;
+                 $desde = $_GET['desde'] ?? null;
+                 $hasta = $_GET['hasta'] ?? null;
                 // Llama a la función de verificación con el token extraído
                 view_tickets::ver_tickets($token, $estado,$nivel, $area);
             }else {
