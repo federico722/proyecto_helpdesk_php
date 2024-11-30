@@ -14,8 +14,6 @@ header('Access-Control-Allow-Credentials: true'); // Si es necesario para permit
             exit();
     }
 
-
-
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
@@ -36,7 +34,7 @@ try {
                  $desde = $_GET['desde'] ?? null;
                  $hasta = $_GET['hasta'] ?? null;
                 // Llama a la función de verificación con el token extraído
-                view_tickets::ver_tickets($token, $estado,$nivel, $area);
+                view_tickets::ver_tickets($token, $estado,$nivel, $area, $desde, $hasta);
             }else {
                 sendResponse(400, ['Error' => "El tipo de token debe ser Bearer"]);
             }

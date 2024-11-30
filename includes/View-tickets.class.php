@@ -18,39 +18,34 @@ class view_tickets{
     public static function ver_tickets($token,$estado = null, $nivel = null, $area = null, $desde = null, $hasta = null ){
 
         try {
-
         //verifica que el token no haya vencido
         $tokenValidation = validarTokenEnClase($token);
-
         if (!$tokenValidation ) {
             return sendResponse(400, ["Error" => "Token vencido"]);
         }
 
-         // Obtener el cuerpo de la solicitud en formato JSON
-         $data = json_decode(file_get_contents("php://input"), true);
 
-         // Usar el estado del parámetro o del JSON
-        $estadoTicket = $estado ?? ($data['estado'] ?? null);
-        $nivelTicket = $nivel ?? ($data['nivel'] ?? null);
-        $areaTicket = $area ?? ($data['area'] ?? null);
-        $desdeTicket = $desde ?? ($data['desde'] ?? null);
-        $hastaTicket = $hasta ?? ($hasta['hasta'] ?? null);
+        // Corrección: Usar los parámetros directamente
+        $estadoTicket = $estado;
+        $nivelTicket = $nivel;
+        $areaTicket = $area;
+        $desdeTicket = $desde;
+        $hastaTicket = $hasta;
 
-        // verificar si son cadenas
-         if ($estadoTicket !== null && !sonCadenas([$estadoTicket])) {
-             header('HTTP/1.1 404 No son string');
-             echo json_encode(["errorString" => "Solo se permite string"]);
-         exit;
-        }
+
+        // Depuración: Imprimir los valores recibidos
+        error_log("Filtros recibidos - Estado: $estadoTicket, Nivel: $nivelTicket, Area: $areaTicket, Desde: $desdeTicket, Hasta: $hastaTicket");
 
             $database = new Database();
             $conn = $database->getConnection();
+
             $stmt = $conn->prepare('CALL ObtenerTicketsPorEstado(:estadoTicket, :nivelTicket, :areaTicket, :desdeTicket, :hastaTicket)');
-            $stmt->bindParam(':estadoTicket',$estadoTicket);
-            $stmt->bindParam(':nivelTicket',$nivelTicket);
-            $stmt->bindParam(':areaTicket',$areaTicket);
-            $stmt->bindParam(':desdeTicket',$desdeTicket);
-            $stmt->bindParam(':hastaTicket',$hastaTicket);
+
+            $stmt->bindValue(':estadoTicket', $estadoTicket, PDO::PARAM_STR | PDO::PARAM_NULL);
+            $stmt->bindValue(':nivelTicket', $nivelTicket, PDO::PARAM_STR | PDO::PARAM_NULL);
+            $stmt->bindValue(':areaTicket', $areaTicket, PDO::PARAM_STR | PDO::PARAM_NULL);
+            $stmt->bindValue(':desdeTicket', $desdeTicket, PDO::PARAM_STR | PDO::PARAM_NULL);
+            $stmt->bindParam(':hastaTicket',$hastaTicket, PDO::PARAM_STR | PDO::PARAM_NULL);
 
 
             if($stmt->execute()){
