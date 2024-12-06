@@ -16,20 +16,43 @@ require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 
 class View_equip{
-    public static function ver_equipo($token){
+    public static function ver_equipo($token, $categoria){
 
         try {
+        //verifica que el token no haya vencido
+        $tokenValidation = validarTokenEnClase($token);
 
-            //verifica que el token no haya vencido
-            $tokenValidation = validarTokenEnClase($token);
-
-            if (!$tokenValidation ) {
+        if (!$tokenValidation ) {
                 return sendResponse(400, ["Error" => "Token vencido"]);
-            }
+        }
+
+        // Verificar si los datos necesarios están presentes
+        if (!isset($categoria)) {
+            return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+        }
+
+
+
+            // verificar si son cadenas
+        $camposValidar = [
+            'categoria' => $categoria];
+
+         //validar los campos
+         $resultado = validarArrayFlexible($camposValidar, 1, 1000);
+
+         if (!$resultado['valido']) {
+            return sendResponse(400, [
+            "Error" => "Datos invalidos",
+            "detalles" => $resultado['errores']
+            ]);
+        }
+
+        $nombre_categoria = $resultado['datos']['categoria'];
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('SELECT nombre_equipo FROM EQUIPOS');
+            $stmt = $conn->prepare('CALL ObtenerEquiposPorCategoria(:nombre_categoria)');
+            $stmt->bindParam(':nombre_categoria',$nombre_categoria);
 
             if($stmt->execute()){
                 // Obtener todos los resultados

@@ -7,7 +7,7 @@ require_once '../../logica/formatoRespuesta.php';
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Authorization');
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['Categoria'])) {
 
     // getallheaders() para obtener los encabezados
     $headers = getallheaders();
@@ -19,8 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         list($type,$token)= explode(" ", $headers['Authorization'],2);
 
         if (strcasecmp($type, 'Bearer') === 0) {
+            $categoria = $_GET['Categoria'];
             // Llama a la función de verificación con el token extraído
-            View_equip::ver_equipo($token);
+
+            View_equip::ver_equipo($token,$categoria);
         }else {
             sendResponse(400, ['Error' => "El tipo de token debe ser Bearer"]);
         }
@@ -31,6 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }else{
     sendResponse(405,
-    ['verificacion_tiempo_token'=> "funcionando correctamente"]
+    ['Error'=> "Metodo incorrecto o incompleto"]
   );
 }
