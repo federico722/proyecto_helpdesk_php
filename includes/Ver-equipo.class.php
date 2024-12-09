@@ -56,7 +56,7 @@ class View_equip{
 
             if($stmt->execute()){
                 // Obtener todos los resultados
-                $equipos = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                $equipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 // Responder con los datos de categorías
             return sendResponse(200, [
