@@ -28,11 +28,11 @@ class view_category{
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('SELECT nombre_categoria FROM CATEGORIAS');
+            $stmt = $conn->prepare('SELECT id_categoria, nombre_categoria FROM CATEGORIAS');
 
             if($stmt->execute()){
                 // Obtener todos los resultados
-                $categorias = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 // Responder con los datos de categorías
             return sendResponse(200, [

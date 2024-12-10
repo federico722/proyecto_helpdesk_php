@@ -24,7 +24,7 @@ class Create_equipo{
 
         //verifica si los datos necesarios estan presentes
           // Verificar si los datos necesarios están presentes
-          if (!isset($data['nombre_equipo'],$data['caracteristicas_del_sistema'],$data['fecha_de_adquisicion'],$data['costo_adquisicion'],$data['valor_residual'],$data['imagen_equipo'],$data['descripcion_equipo'],$data['modelo_equipo'],$data['numero_serial'],$data['proveedor_equipo'],$data['id_agente'],$data['ubicacion_equipo'],$data['vida_util_equipo'],$data['id_categoria'],$data['estado_equipo'],$data['depreciacion_equipo'])) {
+          if (!isset($data['nombre_equipo'],$data['caracteristicas_del_sistema'],$data['fecha_de_adquisicion'],$data['costo_adquisicion'],$data['valor_residual'],$data['imagen_equipo'],$data['descripcion_equipo'],$data['modelo_equipo'],$data['numero_serial'],$data['proveedor_equipo'],$data['nombre_encargado_equipo'],$data['ubicacion_equipo'],$data['vida_util_equipo'],$data['id_categoria'],$data['estado_equipo'])) {
             return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
         }
 
@@ -46,17 +46,15 @@ class Create_equipo{
         $modelo_equipo = $data['modelo_equipo'];
         $numero_serial = $data['numero_serial'];
         $proveedor_equipo = $data['proveedor_equipo'];
-        $id_agente = $data['id_agente'];
+        $nombre_encargado_equipo = $data['nombre_encargado_equipo'];
         $ubicacion_equipo =$data['ubicacion_equipo'];
         $vida_util_equipo =$data['vida_util_equipo'];
         $id_categoria = $data['id_categoria'];
         $estado_equipo = $data['estado_equipo'];
-        $depreciacion_equipo = $data['depreciacion_equipo'];
-
 
 
         // verifica si son numeros
-        if (!sonNumerico([$costo_adquisicion,$valor_residual,$id_agente,$vida_util_equipo,$id_categoria,$depreciacion_equipo])) {
+        if (!sonNumerico([$costo_adquisicion,$valor_residual,$id_categoria])) {
             return sendResponse(400, [
                 "Error" => "Datos invalidos, solo se permiten valores numericos"
                 ]);
@@ -69,7 +67,7 @@ class Create_equipo{
 
         // verificar si son cadenas
         $camposValidar = [
-            'nombre_equipo' => $nombre_equipo, 'caracteristicas_del_sistema' => $caracteristicas_del_sistema,'imagen_equipo' => $imagen_equipo, 'descripcion_equipo' => $descripcion_equipo, 'modelo_equipo' => $modelo_equipo, 'numero_serial' => $numero_serial, 'proveedor_equipo' => $proveedor_equipo,'ubicacion_equipo' => $ubicacion_equipo, 'estado_equipo' => $estado_equipo
+            'nombre_equipo' => $nombre_equipo, 'caracteristicas_del_sistema' => $caracteristicas_del_sistema,'imagen_equipo' => $imagen_equipo, 'descripcion_equipo' => $descripcion_equipo, 'modelo_equipo' => $modelo_equipo, 'numero_serial' => $numero_serial, 'proveedor_equipo' => $proveedor_equipo,'ubicacion_equipo' => $ubicacion_equipo, 'estado_equipo' => $estado_equipo, 'nombre_encargado_equipo' => $nombre_encargado_equipo, 'vida_util_equipo' => $vida_util_equipo
            ];
 
          //validar los campos
@@ -91,10 +89,12 @@ class Create_equipo{
         $proveedor_equipo = $resultado['datos']['proveedor_equipo'];
         $ubicacion_equipo = $resultado['datos']['ubicacion_equipo'];
         $estado_equipo = $resultado['datos']['estado_equipo'];
+        $nombre_encargado_equipo = $resultado['datos']['nombre_encargado_equipo'];
+        $vida_util_equipo = $resultado['datos']['vida_util_equipo'];
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('INSERT INTO EQUIPOS (nombre_equipo,caracteristicas_del_sistema,fecha_de_adquisicion,costo_adquisicion,valor_residual,imagen_equipo,descripcion_equipo,modelo_equipo,numero_serial,proveedor_equipo,id_agente,ubicacion_equipo,vida_util_equipo,id_categoria,estado_equipo,depreciacion_equipo ) VALUES(:nombre_equipo,:caracteristicas_del_sistema,:fecha_de_adquisicion,:costo_adquisicion,:valor_residual,:imagen_equipo,:descripcion_equipo,:modelo_equipo,:numero_serial,:proveedor_equipo,:id_agente,:ubicacion_equipo,:vida_util_equipo,:id_categoria,:estado_equipo,:depreciacion_equipo)');
+            $stmt = $conn->prepare('INSERT INTO EQUIPOS (nombre_equipo,caracteristicas_del_sistema,fecha_de_adquisicion,costo_adquisicion,valor_residual,imagen_equipo,descripcion_equipo,modelo_equipo,numero_serial,proveedor_equipo,nombre_encargado_equipo,ubicacion_equipo,vida_util_equipo,id_categoria,estado_equipo) VALUES(:nombre_equipo,:caracteristicas_del_sistema,:fecha_de_adquisicion,:costo_adquisicion,:valor_residual,:imagen_equipo,:descripcion_equipo,:modelo_equipo,:numero_serial,:proveedor_equipo,:nombre_encargado_equipo,:ubicacion_equipo,:vida_util_equipo,:id_categoria,:estado_equipo)');
             $stmt->bindParam(':nombre_equipo',$nombre_equipo);
             $stmt->bindParam(':caracteristicas_del_sistema',$caracteristicas_del_sistema);
             $stmt->bindParam(':fecha_de_adquisicion',$fecha_de_adquisicion);
@@ -105,12 +105,11 @@ class Create_equipo{
             $stmt->bindParam(':modelo_equipo',$modelo_equipo);
             $stmt->bindParam(':numero_serial',$numero_serial);
             $stmt->bindParam(':proveedor_equipo',$proveedor_equipo);
-            $stmt->bindParam(':id_agente',$id_agente);
+            $stmt->bindParam(':nombre_encargado_equipo',$nombre_encargado_equipo);
             $stmt->bindParam(':ubicacion_equipo',$ubicacion_equipo);
             $stmt->bindParam(':vida_util_equipo',$vida_util_equipo);
             $stmt->bindParam(':id_categoria',$id_categoria);
             $stmt->bindParam(':estado_equipo',$estado_equipo);
-            $stmt->bindParam(':depreciacion_equipo',$depreciacion_equipo);
 
             if($stmt->execute()){
                 // Responder con éxito
