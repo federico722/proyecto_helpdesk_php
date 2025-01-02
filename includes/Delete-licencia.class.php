@@ -72,10 +72,10 @@ class delete_licencia{
         ]);
            }else{
                // Responder con error 500 si la inserción falla
-            return sendResponse(500, ["error" => "No se pudo editar el nombre de categoria"]);
+            return sendResponse(500, ["error" => "No se pudo eliminar la licencia"]);
           }
         } catch (\Throwable $th) {
-            error_log('Error al editar el nombre de categoria: ' . $th->getMessage());
+            error_log('Error interno: ' . $th->getMessage());
             return sendResponse(500, [
                 "error" => "ocurrio un error interno del servidor",
                 "detalles" => $th->getMessage()

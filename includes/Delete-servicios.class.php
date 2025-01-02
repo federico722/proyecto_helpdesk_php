@@ -28,7 +28,7 @@ class delete_servicio{
 
 
         // Verificar si los datos necesarios están presentes
-        if (!isset($data['nombre_seleccionado_servicio'], $data['nombre_servicio'])) {
+        if (!isset( $data['nombre_servicio'])) {
             return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
         }
          //verifica que el token no haya vencido
@@ -38,12 +38,10 @@ class delete_servicio{
         }
 
 
-         $nombre_seleccionado_servicio = $data['nombre_seleccionado_servicio'];
          $nombre_servicio = $data['nombre_servicio'];
 
         // verificar si son cadenas
         $camposValidar = [
-            'nombre_seleccionado_servicio' => $nombre_seleccionado_servicio,
             'nombre_servicio' => $nombre_servicio
            ];
 
@@ -58,27 +56,25 @@ class delete_servicio{
         }
 
 
-        $nombre_seleccionado_servicio = $resultado['datos']['nombre_seleccionado_servicio'];
         $nombre_servicio = $resultado['datos']['nombre_servicio'];
 
         $database = new Database();
         $conn = $database->getConnection();
-        $stmt = $conn->prepare('UPDATE CATEGORIAS SET nombre_categoria = :nombre_categoria WHERE nombre_categoria = :nombre_seleccionado_categoria ');
+        $stmt = $conn->prepare('DELETE FROM SERVICIOS WHERE nombre_servicio = :nombre_servicio');
 
-        $stmt->bindParam(':nombre_categoria',$nombre_categoria);
-        $stmt->bindParam(':nombre_seleccionado_categoria',$nombre_seleccionado_categoria);
+        $stmt->bindParam(':nombre_servicio',$nombre_servicio);
 
         if($stmt->execute()){
             // Responder con los datos de categorías
         return sendResponse(200, [
-            "success" => "nombre de categoria actualizado con exito",
+            "success" => "Servicio eliminado con exito",
         ]);
            }else{
                // Responder con error 500 si la inserción falla
-            return sendResponse(500, ["error" => "No se pudo editar el nombre de categoria"]);
+            return sendResponse(500, ["error" => "No se pudo eliminar el servicio"]);
           }
         } catch (\Throwable $th) {
-            error_log('Error al editar el nombre de categoria: ' . $th->getMessage());
+            error_log('Error interno: ' . $th->getMessage());
             return sendResponse(500, [
                 "error" => "ocurrio un error interno del servidor",
                 "detalles" => $th->getMessage()
