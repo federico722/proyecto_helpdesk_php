@@ -25,14 +25,14 @@ class Edit_licencia{
 
         // Verificar si los datos necesarios están presentes
         if (!isset($data['id_licencia'],$data['nombre_licencia'],$data['descripcion_licencia'],$data['numero_licencia'],$data['fecha_adquisicion'],$data['duracion_licencia'],$data['costo_licencia'],$data['usuarios_permitidos'],$data['proveedor_licencia'],$data['estado_licencia'],$data['tipo_licencia'])) {
-        return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+        return sendResponse(400, ["Error400FaltanDatos" => "Faltan datos en la solicitud"]);
         }
 
         //verifica que el token no haya vencido
         $tokenValidation = validarTokenEnClase($token);
 
         if (!$tokenValidation ) {
-                return sendResponse(400, ["Error" => "Token vencido"]);
+                return sendResponse(400, ["ErrorToken" => "Token vencido"]);
         }
 
 
@@ -48,18 +48,16 @@ class Edit_licencia{
        $proveedor_licencia = $data['proveedor_licencia'];
        $estado_licencia = $data['estado_licencia'];
        $tipo_licencia = $data['tipo_licencia'];
-       
-
 
         // verifica si son fechas
         if (!validarFecha([$fecha_adquisicion])) {
-            return sendResponse(400,['Error' => "Datos invalidos, solo se permite la fecha en el formato Y-m-d"]);
+            return sendResponse(400,['ErrorFecha' => "Datos invalidos, solo se permite la fecha en el formato Y-m-d"]);
         }
 
         // verifica si son numeros
         if (!sonNumerico([$costo_licencia,$id_licencia])) {
         return sendResponse(400, [
-            "Error" => "Datos invalidos, solo se permiten valores numericos"
+            "ErrorNullNumerico" => "Datos invalidos, solo se permiten valores numericos en costos licencia"
             ]);
         }
 
@@ -82,7 +80,7 @@ class Edit_licencia{
 
          if (!$resultado['valido']) {
             return sendResponse(400, [
-            "Error" => "Datos invalidos",
+            "ErrorCampos" => "Campos invalidos",
             "detalles" => $resultado['errores']
             ]);
         }
@@ -114,7 +112,7 @@ class Edit_licencia{
             if($stmt->execute()){
                 // Responder con los datos de categorías
             return sendResponse(200, [
-                "Success" => "Licencia actualizado con exito",
+                "success" => "Licencia actualizado con exito",
             ]);
                }else{
                    // Responder con error 500 si la inserción falla
@@ -123,7 +121,7 @@ class Edit_licencia{
         } catch (\Throwable $th) {
             error_log('Error al editar la licencia: ' . $th->getMessage());
             return sendResponse(500, [
-                "error" => "ocurrio un error interno del servidor",
+                "errorInterno" => "ocurrio un error interno del servidor",
                 "detalles" => $th->getMessage()
          ]);
         }

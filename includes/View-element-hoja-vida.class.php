@@ -15,10 +15,10 @@ require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 
 class View_element_paper_life{
-    public static function ver_elementos_hoja_vida($token, $id_equipo){
+    public static function ver_elementos_hoja_vida($token, $id_hojas_vida, $fecha_anotacion ){
         try {
         // Verificar si los datos necesarios están presentes
-         if (!isset($id_equipo)) {
+         if (!isset($id_hojas_vida, $fecha_anotacion)) {
             return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
         }
 
@@ -29,14 +29,15 @@ class View_element_paper_life{
             return sendResponse(400, ["Error" => "Token vencido"]);
         }
 
-        if (!sonNumerico([$id_equipo])) {
-            return sendResponse(400, ["Error" => "Tipo de dato no permitido"]);
+        if (!sonNumerico([$id_hojas_vida])) {
+            return sendResponse(400, ["ErrorDatoNumerico" => "Tipo de dato no permitido " . gettype($id_hojas_vida)]);
         }
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('SELECT * FROM HOJAS_VIDA WHERE id_equipo = :id_equipo');
-            $stmt->bindParam(':id_equipo',$id_equipo);
+            $stmt = $conn->prepare('SELECT * FROM HOJAS_VIDA WHERE id_hojas_vida = :id_hojas_vida AND fecha_anotacion = :fecha_anotacion');
+            $stmt->bindParam(':id_hojas_vida',$id_hojas_vida);
+            $stmt->bindParam(':fecha_anotacion', $fecha_anotacion);
 
             if($stmt->execute()){
                 // Obtener todos los resultados
@@ -44,7 +45,7 @@ class View_element_paper_life{
 
                 // Responder con los datos de categorías
             return sendResponse(200, [
-                "elementos_hoja_vida" => $elementos_hoja_vida
+                "hoja_de_vida" => $elementos_hoja_vida
             ]);
                }else{
                 // Responder con error 500 si la inserción falla

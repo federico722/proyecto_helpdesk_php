@@ -2,10 +2,11 @@
 
 //funcion para centralizar la respuesta json
 
-function sendResponse($statusCode, $response){
-    header("Content-Type: application/json");
+function sendResponse($statusCode, $data){
     http_response_code($statusCode);
-    echo json_encode($response);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
 }
 
 

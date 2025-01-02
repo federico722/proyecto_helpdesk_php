@@ -23,15 +23,15 @@ class Edit_servico{
         $data = json_decode(file_get_contents("php://input"), true);
 
         // Verificar si los datos necesarios están presentes
-        if (!isset($data['id_servicio'],$data['descripcion_servicio'],$data['fecha_inicio'],$data['proveedor_servicio'],$data['fracuencia_facturacion'],$data['estado_servicio'],$data['url_acceso'],$data['tipo_servicio'],$data['costo_servicio'],$data['nombre_servicio'])) {
-        return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+        if (!isset($data['id_servicio'],$data['descripcion_servicio'],$data['fecha_inicio'],$data['proveedor_servicio'],$data['tiempo_servicio'],$data['estado_servicio'],$data['url_acceso'],$data['tipo_servicio'],$data['costo_servicio'],$data['nombre_servicio'])) {
+        return sendResponse(400, ["Error400FaltanDatos" => "Faltan datos en la solicitud"]);
         }
 
         //verifica que el token no haya vencido
         $tokenValidation = validarTokenEnClase($token);
 
         if (!$tokenValidation ) {
-                return sendResponse(400, ["Error" => "Token vencido"]);
+                return sendResponse(400, ["ErrorToken" => "Token vencido"]);
         }
 
 
@@ -40,7 +40,7 @@ class Edit_servico{
        $descripcion_servicio = $data['descripcion_servicio'];
        $fecha_inicio = $data['fecha_inicio'];
        $proveedor_servicio = $data['proveedor_servicio'];
-       $fracuencia_facturacion = $data['fracuencia_facturacion'];
+       $tiempo_servicio = $data['tiempo_servicio'];
        $estado_servicio = $data['estado_servicio'];
        $url_acceso = $data['url_acceso'];
        $tipo_servicio = $data['tipo_servicio'];
@@ -51,20 +51,20 @@ class Edit_servico{
 
         // verifica si son fechas
         if (!validarFecha([$fecha_inicio])) {
-            return sendResponse(400,['Error' => "Datos invalidos, solo se permite la fecha en el formato Y-m-d"]);
+            return sendResponse(400,['ErrorFecha' => "Datos invalidos, solo se permite la fecha en el formato Y-m-d"]);
         }
 
         // verifica si son numeros
         if (!sonNumerico([$id_servicio, $costo_servicio])) {
         return sendResponse(400, [
-            "Error" => "Datos invalidos, solo se permiten valores numericos"
+            "ErrorNullNumerico" => "Datos invalidos, solo se permiten valores numericos"
             ]);
         }
 
 
         // verificar si son cadenas
         $camposValidar = [
-            'descripcion_servicio' => $descripcion_servicio, 'proveedor_servicio' => $proveedor_servicio,'fracuencia_facturacion' => $fracuencia_facturacion, 'estado_servicio' => $estado_servicio, 'url_acceso' => $url_acceso, 'tipo_servicio' => $tipo_servicio, 'nombre_servicio' => $nombre_servicio
+            'descripcion_servicio' => $descripcion_servicio, 'proveedor_servicio' => $proveedor_servicio,'tiempo_servicio' => $tiempo_servicio, 'estado_servicio' => $estado_servicio, 'url_acceso' => $url_acceso, 'tipo_servicio' => $tipo_servicio, 'nombre_servicio' => $nombre_servicio
            ];
 
          //validar los campos
@@ -72,7 +72,7 @@ class Edit_servico{
 
          $descripcion_servicio = $resultado['datos']['descripcion_servicio'];
          $proveedor_servicio = $resultado['datos']['proveedor_servicio'];
-         $fracuencia_facturacion = $resultado['datos']['fracuencia_facturacion'];
+         $tiempo_servicio = $resultado['datos']['tiempo_servicio'];
          $estado_servicio = $resultado['datos']['estado_servicio'];
          $url_acceso = $resultado['datos']['url_acceso'];
          $tipo_servicio = $resultado['datos']['tipo_servicio'];
@@ -80,7 +80,7 @@ class Edit_servico{
 
          if (!$resultado['valido']) {
             return sendResponse(400, [
-            "Error" => "Datos invalidos",
+            "ErrorCampos" => "Datos invalidos",
             "detalles" => $resultado['errores']
             ]);
         }
@@ -90,7 +90,7 @@ class Edit_servico{
         $stmt = $conn->prepare('UPDATE Servicios SET descripcion_servicio = :descripcion_servicio ,
         fecha_inicio = :fecha_inicio ,
         proveedor_servicio = :proveedor_servicio,
-        frecuencia_facturacion  = :frecuencia_facturacion,
+        frecuencia_facturacion  = :tiempo_servicio,
         estado_servicio = :estado_servicio,
         url_acceso = :url_acceso,
         tipo_servicio = :tipo_servicio,
@@ -99,7 +99,7 @@ class Edit_servico{
         $stmt->bindParam(':descripcion_servicio',$descripcion_servicio);
         $stmt->bindParam(':fecha_inicio',$fecha_inicio);
         $stmt->bindParam(':proveedor_servicio',$proveedor_servicio);
-        $stmt->bindParam(':frecuencia_facturacion',$frecuencia_facturacion);
+        $stmt->bindParam(':tiempo_servicio',$tiempo_servicio);
         $stmt->bindParam(':estado_servicio',$estado_servicio);
         $stmt->bindParam(':estado_servicio',$estado_servicio);
         $stmt->bindParam(':url_acceso',$url_acceso);
@@ -112,7 +112,7 @@ class Edit_servico{
 
                 // Responder con los datos de categorías
             return sendResponse(200, [
-                "Success" => "Servicio actualizado con exito",
+                "success" => "Servicio actualizado con exito",
             ]);
                }else{
                    // Responder con error 500 si la inserción falla

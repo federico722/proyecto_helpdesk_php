@@ -85,7 +85,17 @@ class Create_servicio{
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('INSERT INTO SERVICIOS (nombre_servicio, descripcion_servicio,fecha_inicio, frecuencia_facturacion,costo_servicio ,proveedor_servicio, estado_servicio,  url_acceso, tipo_servicio, id_equipo) VALUES(:nombre_servicio, :descripcion_servicio,:fecha_inicio ,:frecuencia_facturacion, :costo_servicio ,:proveedor_servicio, :estado_servicio,:url_acceso, :tipo_servicio, :id_equipo)');
+            $stmt = $conn->prepare('INSERT INTO SERVICIOS (
+            nombre_servicio, 
+            descripcion_servicio,
+            fecha_inicio, 
+            frecuencia_facturacion,
+            costo_servicio,
+            proveedor_servicio, 
+            estado_servicio,  
+            url_acceso, 
+            tipo_servicio, 
+            id_equipo) VALUES(:nombre_servicio, :descripcion_servicio,:fecha_inicio ,:frecuencia_facturacion, :costo_servicio ,:proveedor_servicio, :estado_servicio,:url_acceso, :tipo_servicio, :id_equipo)');
             $stmt->bindParam(':nombre_servicio',$nombre_servicio);
             $stmt->bindParam(':descripcion_servicio',$descripcion_servicio);
             $stmt->bindParam(':fecha_inicio',$fecha_inicio);

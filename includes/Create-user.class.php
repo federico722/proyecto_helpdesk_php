@@ -46,7 +46,7 @@ class Create_user{
             // Encriptar la contraseña antes de guardarla
              $contrasenaHash = password_hash($contrasena, PASSWORD_BCRYPT);
 
-            $rol = 4;
+            $rol = 2;
 
             $database = new Database();
             $conn = $database->getConnection();

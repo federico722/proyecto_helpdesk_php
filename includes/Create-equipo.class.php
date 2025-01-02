@@ -25,7 +25,8 @@ class Create_equipo{
         //verifica si los datos necesarios estan presentes
           // Verificar si los datos necesarios están presentes
           if (!isset($data['nombre_equipo'],$data['caracteristicas_del_sistema'],$data['fecha_de_adquisicion'],$data['costo_adquisicion'],$data['valor_residual'],$data['imagen_equipo'],$data['descripcion_equipo'],$data['modelo_equipo'],$data['numero_serial'],$data['proveedor_equipo'],$data['nombre_encargado_equipo'],$data['ubicacion_equipo'],$data['vida_util_equipo'],$data['id_categoria'],$data['estado_equipo'])) {
-            return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+            return sendResponse(400, ["Error" => "Faltan datos en la solicitud",
+        "data" => $data]);
         }
 
         //verifica que el token no haya vencido
@@ -67,7 +68,7 @@ class Create_equipo{
 
         // verificar si son cadenas
         $camposValidar = [
-            'nombre_equipo' => $nombre_equipo, 'caracteristicas_del_sistema' => $caracteristicas_del_sistema,'imagen_equipo' => $imagen_equipo, 'descripcion_equipo' => $descripcion_equipo, 'modelo_equipo' => $modelo_equipo, 'numero_serial' => $numero_serial, 'proveedor_equipo' => $proveedor_equipo,'ubicacion_equipo' => $ubicacion_equipo, 'estado_equipo' => $estado_equipo, 'nombre_encargado_equipo' => $nombre_encargado_equipo, 'vida_util_equipo' => $vida_util_equipo
+            'nombre_equipo' => $nombre_equipo, 'caracteristicas_del_sistema' => $caracteristicas_del_sistema,'descripcion_equipo' => $descripcion_equipo, 'modelo_equipo' => $modelo_equipo, 'numero_serial' => $numero_serial, 'proveedor_equipo' => $proveedor_equipo,'ubicacion_equipo' => $ubicacion_equipo, 'estado_equipo' => $estado_equipo, 'nombre_encargado_equipo' => $nombre_encargado_equipo, 'vida_util_equipo' => $vida_util_equipo
            ];
 
          //validar los campos
@@ -82,7 +83,6 @@ class Create_equipo{
 
         $nombre_equipo = $resultado['datos']['nombre_equipo'];
         $caracteristicas_del_sistema = $resultado['datos']['caracteristicas_del_sistema'];
-        $imagen_equipo = $resultado['datos']['imagen_equipo'];
         $descripcion_equipo = $resultado['datos']['descripcion_equipo'];
         $modelo_equipo = $resultado['datos']['modelo_equipo'];
         $numero_serial = $resultado['datos']['numero_serial'];

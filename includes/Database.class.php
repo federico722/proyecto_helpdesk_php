@@ -3,11 +3,12 @@
 class Database {
     private $host = 'localhost';
     private $user= 'root';
-    private $password = 'admin123';
+    private $port = '3307'; // Especifica el puerto aquí
+    private $password = 'Fede1209.*';
     private $database = 'sistema_helpdesk';
 
     public function getConnection(){
-        $hostDB = "mysql:host=".$this->host.";dbname=".$this->database.";";
+        $hostDB = "mysql:host=".$this->host.";port=".$this->port.";dbname=".$this->database.";";
 
         try{
             $connection = new PDO($hostDB,$this->user,$this->password);

@@ -8,7 +8,7 @@ require_once __DIR__ . '..\..\logica\verificarContrasena.php';
 require_once __DIR__ . '..\..\vendor/autoload.php';
 require_once __DIR__ . '..\..\credentials\create-token.php';
 require_once __DIR__ . '..\..\credentials\obtener-payload-token.php';
-require_once __DIR__ . '..\..\logica\formatoRespuesta.php';
+require_once __DIR__ . '../../logica/formatoRespuesta.php';
 require_once __DIR__ . '..\..\logica\confirmarInt.php';
 require_once __DIR__ . '..\..\credentials\verificar-token.php';
 require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
@@ -38,7 +38,7 @@ class view_tickets{
 
             $database = new Database();
             $conn = $database->getConnection();
-
+   // CALL ObtenerTicketsPorEstado(null, null, null, null, null)
             $stmt = $conn->prepare('CALL ObtenerTicketsPorEstado(:estadoTicket, :nivelTicket, :areaTicket, :desdeTicket, :hastaTicket)');
 
             $stmt->bindValue(':estadoTicket', $estadoTicket, PDO::PARAM_STR | PDO::PARAM_NULL);
@@ -46,22 +46,18 @@ class view_tickets{
             $stmt->bindValue(':areaTicket', $areaTicket, PDO::PARAM_STR | PDO::PARAM_NULL);
             $stmt->bindValue(':desdeTicket', $desdeTicket, PDO::PARAM_STR | PDO::PARAM_NULL);
             $stmt->bindParam(':hastaTicket',$hastaTicket, PDO::PARAM_STR | PDO::PARAM_NULL);
-
-
+            
             if($stmt->execute()){
                 // Obtener todos los resultados
-                $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);  
+
+                $observarDaño = gettype($tickets);
 
                 // Responder con los datos de categorías
-            return sendResponse(200, [
-                "tickets" => $tickets,
-                "estado" => $estadoTicket,
-                "nivel" => $nivelTicket,
-                "area" => $areaTicket,
-                "desde" => $desdeTicket,
-                "hasta" => $hastaTicket
-            ]);
-               }else{
+                return sendResponse(200, [
+                    "tickets" => $tickets
+                ]);
+            }else{
                    // Responder con error 500 si la inserción falla
                 return sendResponse(500, ["error" => "No se pudo obtener los tickets"]);
               }

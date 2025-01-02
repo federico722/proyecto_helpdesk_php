@@ -19,6 +19,11 @@ class View_equip{
     public static function ver_equipo($token, $categoria){
 
         try {
+         // Verificar si los datos necesarios están presentes
+        if (!isset($categoria)) {
+            return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+        }
+
         //verifica que el token no haya vencido
         $tokenValidation = validarTokenEnClase($token);
 
@@ -26,14 +31,7 @@ class View_equip{
                 return sendResponse(400, ["Error" => "Token vencido"]);
         }
 
-        // Verificar si los datos necesarios están presentes
-        if (!isset($categoria)) {
-            return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
-        }
-
-
-
-            // verificar si son cadenas
+     // verificar si son cadenas
         $camposValidar = [
             'categoria' => $categoria];
 

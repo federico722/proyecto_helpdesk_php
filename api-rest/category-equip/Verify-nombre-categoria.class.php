@@ -1,6 +1,6 @@
 <?php
 
-require_once '..\..\includes\Edit-equip.class.php';
+require_once '..\..\includes\Edit -nombre-categoria.class.php';
 require_once '../../logica/formatoRespuesta.php';
 
 header('Access-Control-Allow-Origin: *');
@@ -13,7 +13,6 @@ header('Access-Control-Allow-Credentials: true'); // Si es necesario para permit
             http_response_code(200);
             exit();
     }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
@@ -28,17 +27,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
         if (strcasecmp($type, 'Bearer') === 0) {
             // Llama a la función de verificación con el token extraído
-            Edit_equip::Editar_equipo($token);
+            Edit_name_category::edit_name_category($token);
         }else {
             sendResponse(400, ['Error' => "El tipo de token debe ser Bearer"]);
         }
     }else{
         sendResponse(401,
-        ['Error'=> "Token de autorizacion no proporcionado"]
+        ['Error'=> "Token de autorización no proporcionado"]
     );
     }
 }else{
     sendResponse(405,
-    ['Error'=> "Metodo incorrecto"]
+    ['ERROR '=> "Metodo incorrecto o incompleto"]
   );
 }

@@ -39,12 +39,12 @@ class View_licencia{
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('SELECT nombre_licencia FROM LICENCIAS WHERE id_equipo = :id_equipo');
+            $stmt = $conn->prepare('SELECT id_licencia, nombre_licencia FROM LICENCIAS WHERE id_equipo = :id_equipo');
             $stmt->bindParam(':id_equipo',$id_equipo);
 
             if($stmt->execute()){
                 // Obtener todos los resultados
-                $licencia = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                $licencia = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 // Responder con los datos de categorías
             return sendResponse(200, [

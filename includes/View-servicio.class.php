@@ -41,12 +41,12 @@ class View_service{
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('SELECT nombre_servicio FROM SERVICIOS WHERE id_equipo = :id_equipo');
+            $stmt = $conn->prepare('SELECT id_servicio, nombre_servicio FROM SERVICIOS WHERE id_equipo = :id_equipo');
             $stmt->bindParam(':id_equipo',$id_equipo);
 
             if($stmt->execute()){
                 // Obtener todos los resultados
-                $servicio = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                $servicio = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 // Responder con los datos de categorías
             return sendResponse(200, [
