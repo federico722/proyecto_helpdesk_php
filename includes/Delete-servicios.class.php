@@ -19,26 +19,21 @@ require_once __DIR__ . '..\..\consultas-usuario\consulta-nombre-categoria.php';
 require_once __DIR__ . '..\..\consultas-usuario\consultar_categoria_equipos.php';
 
 class delete_servicio{
-    public static function Delete_servicio($token){
+    public static function Delete_servicio($token, $nombre_servicio){
 
         try {
 
-        // Obtener el cuerpo de la solicitud en formato JSON
-        $data = json_decode(file_get_contents("php://input"), true);
-
-
         // Verificar si los datos necesarios están presentes
-        if (!isset( $data['nombre_servicio'])) {
-            return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+        if (!isset( $nombre_servicio)) {
+            return sendResponse(400, ["Error400FaltanDatos" => "Faltan datos en la solicitud" .$nombre_servicio]);
         }
+
          //verifica que el token no haya vencido
         $tokenValidation = validarTokenEnClase($token);
         if (!$tokenValidation ) {
-            return sendResponse(400, ["Error" => "Token vencido"]);
+            return sendResponse(400, ["ErrorToken" => "Token vencido"]);
         }
 
-
-         $nombre_servicio = $data['nombre_servicio'];
 
         // verificar si son cadenas
         $camposValidar = [
@@ -50,7 +45,7 @@ class delete_servicio{
 
         if (!$resultado['valido']) {
             return sendResponse(400, [
-            "Error" => "Datos invalidos",
+            "ErrorCampos" => "Datos invalidos",
             "detalles" => $resultado['errores']
             ]);
         }

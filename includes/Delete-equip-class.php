@@ -19,26 +19,21 @@ require_once __DIR__ . '..\..\consultas-usuario\consulta-nombre-categoria.php';
 require_once __DIR__ . '..\..\consultas-usuario\consultar-equipo-licencia-servicio.php';
 
 class delete_equipo{
-    public static function Delete_equipo($token){
+    public static function Delete_equipo($token, $nombre_equipo){
 
         try {
 
-        // Obtener el cuerpo de la solicitud en formato JSON
-        $data = json_decode(file_get_contents("php://input"), true);
-
-
         // Verificar si los datos necesarios están presentes
-        if (!isset($data['nombre_equipo'])) {
-            return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+        if (!isset($nombre_equipo)) {
+            return sendResponse(400, ["Error400FaltanDatos" => "Faltan datos en la solicitud"]);
         }
 
          //verifica que el token no haya vencido
         $tokenValidation = validarTokenEnClase($token);
         if (!$tokenValidation ) {
-            return sendResponse(400, ["Error" => "Token vencido"]);
+            return sendResponse(400, ["ErrorToken" => "Token vencido"]);
         }
 
-         $nombre_equipo = $data['nombre_equipo'];
 
         // verificar si son cadenas
         $camposValidar = [
@@ -59,7 +54,7 @@ class delete_equipo{
         $resultadoBuscarServicioLicencia = consultar_licencias_servicios($nombre_equipo);
 
         //validar que no haya datos en EQUIPOS
-        if ($resultadoBuscarServicioLicencia ) {
+        if (!$resultadoBuscarServicioLicencia ) {
             return sendResponse(400, [
                 "ErrorCode01x" => "No es posible eliminar el equipo ahi servicios o licencias",
             ]);
@@ -80,7 +75,7 @@ class delete_equipo{
         ]);
            }else{
                // Responder con error 500 si la inserción falla
-            return sendResponse(500, ["error" => "No se pudo eliminar el equipo"]);
+            return sendResponse(500, ["error" => "No se pudo eliminar el equipo" .$nombre_equipo]);
           }
         } catch (\Throwable $th) {
             error_log('Error interno : ' . $th->getMessage());

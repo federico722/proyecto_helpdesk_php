@@ -19,16 +19,12 @@ require_once __DIR__ . '..\..\consultas-usuario\consulta-nombre-categoria.php';
 require_once __DIR__ . '..\..\consultas-usuario\consultar_categoria_equipos.php';
 
 class delete_categoria{
-    public static function Delete_categoria($token){
+    public static function Delete_categoria($token, $nombre_categoria){
 
         try {
 
-        // Obtener el cuerpo de la solicitud en formato JSON
-        $data = json_decode(file_get_contents("php://input"), true);
-
-
         // Verificar si los datos necesarios están presentes
-        if (!isset($data['nombre_categoria'])) {
+        if (!isset($nombre_categoria)) {
             return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
         }
 
@@ -38,7 +34,6 @@ class delete_categoria{
             return sendResponse(400, ["Error" => "Token vencido"]);
         }
 
-         $nombre_categoria = $data['nombre_categoria'];
 
         // verificar si son cadenas
         $camposValidar = [
@@ -59,7 +54,7 @@ class delete_categoria{
         $resultadoBuscarEquipo = consultar_equipos_categoria($nombre_categoria);
 
         //validar que no haya datos en la categoria 
-        if ($resultadoBuscarEquipo ) {
+        if (!$resultadoBuscarEquipo ) {
             return sendResponse(400, [
                 "ErrorCode01x" => "No es posible eliminar la categoria ahi equipos ingresados",
             ]);

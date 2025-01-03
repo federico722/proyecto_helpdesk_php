@@ -19,27 +19,20 @@ require_once __DIR__ . '..\..\consultas-usuario\consulta-nombre-categoria.php';
 require_once __DIR__ . '..\..\consultas-usuario\consultar_categoria_equipos.php';
 
 class delete_licencia{
-    public static function Delete_licencia($token){
+    public static function Delete_licencia($token, $nombre_licencia){
 
         try {
 
-        // Obtener el cuerpo de la solicitud en formato JSON
-        $data = json_decode(file_get_contents("php://input"), true);
-
-
         // Verificar si los datos necesarios están presentes
-        if (!isset( $data['nombre_licencia'])) {
-            return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
+        if (!isset( $nombre_licencia )) {
+            return sendResponse(400, ["Error400FaltanDatos" => "Faltan datos en la solicitud"]);
         }
+
          //verifica que el token no haya vencido
         $tokenValidation = validarTokenEnClase($token);
         if (!$tokenValidation ) {
-            return sendResponse(400, ["Error" => "Token vencido"]);
+            return sendResponse(400, ["ErrorToken" => "Token vencido"]);
         }
-
-
-         
-         $nombre_licencia = $data['nombre_licencia'];
 
         // verificar si son cadenas
         $camposValidar = [
@@ -51,7 +44,7 @@ class delete_licencia{
 
         if (!$resultado['valido']) {
             return sendResponse(400, [
-            "Error" => "Datos invalidos",
+            "ErrorDatos" => "Datos invalidos",
             "detalles" => $resultado['errores']
             ]);
         }
