@@ -13,6 +13,7 @@ require_once __DIR__ . '..\..\logica\confirmarInt.php';
 require_once __DIR__ . '..\..\credentials\verificar-token.php';
 require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
+require_once __DIR__ . '..\..\logica\obtenerFechaActual.php';
 
 class Create_servicio{
 
@@ -81,6 +82,7 @@ class Create_servicio{
         $estado_servicio = $resultado['datos']['estado_servicio'];
         $url_acceso = $resultado['datos']['url_acceso'];
         $tipo_servicio = $resultado['datos']['tipo_servicio'];
+        $fecha_actual = obtenerFechaActual();
 
 
             $database = new Database();
@@ -95,7 +97,17 @@ class Create_servicio{
             estado_servicio,  
             url_acceso, 
             tipo_servicio, 
-            id_equipo) VALUES(:nombre_servicio, :descripcion_servicio,:fecha_inicio ,:frecuencia_facturacion, :costo_servicio ,:proveedor_servicio, :estado_servicio,:url_acceso, :tipo_servicio, :id_equipo)');
+            id_equipo) VALUES(
+            :nombre_servicio, 
+            :descripcion_servicio,
+            :fecha_inicio ,
+            :frecuencia_facturacion, 
+            :costo_servicio,
+            :proveedor_servicio, 
+            :estado_servicio, 
+            :url_acceso, 
+            :tipo_servicio, 
+            :id_equipo)');
             $stmt->bindParam(':nombre_servicio',$nombre_servicio);
             $stmt->bindParam(':descripcion_servicio',$descripcion_servicio);
             $stmt->bindParam(':fecha_inicio',$fecha_inicio);
@@ -106,6 +118,8 @@ class Create_servicio{
             $stmt->bindParam(':url_acceso',$url_acceso);
             $stmt->bindParam(':tipo_servicio',$tipo_servicio);
             $stmt->bindParam(':id_equipo',$id_equipo);
+            $stmt->bindParam(':fecha_actual',$fecha_actual);
+
 
 
             if($stmt->execute()){

@@ -13,6 +13,8 @@ require_once __DIR__ . '..\..\logica\confirmarInt.php';
 require_once __DIR__ . '..\..\credentials\verificar-token.php';
 require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
+require_once __DIR__ . '..\..\logica\obtenerFechaActual.php';
+
 
 class Create_equipo{
 
@@ -81,6 +83,9 @@ class Create_equipo{
             ]);
         }
 
+        $fecha_actual = obtenerFechaActual();
+
+
         $nombre_equipo = $resultado['datos']['nombre_equipo'];
         $caracteristicas_del_sistema = $resultado['datos']['caracteristicas_del_sistema'];
         $descripcion_equipo = $resultado['datos']['descripcion_equipo'];
@@ -94,7 +99,39 @@ class Create_equipo{
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('INSERT INTO EQUIPOS (nombre_equipo,caracteristicas_del_sistema,fecha_de_adquisicion,costo_adquisicion,valor_residual,imagen_equipo,descripcion_equipo,modelo_equipo,numero_serial,proveedor_equipo,nombre_encargado_equipo,ubicacion_equipo,vida_util_equipo,id_categoria,estado_equipo) VALUES(:nombre_equipo,:caracteristicas_del_sistema,:fecha_de_adquisicion,:costo_adquisicion,:valor_residual,:imagen_equipo,:descripcion_equipo,:modelo_equipo,:numero_serial,:proveedor_equipo,:nombre_encargado_equipo,:ubicacion_equipo,:vida_util_equipo,:id_categoria,:estado_equipo)');
+            $stmt = $conn->prepare('INSERT INTO EQUIPOS (
+            nombre_equipo,
+            caracteristicas_del_sistema,
+            fecha_de_adquisicion,
+            costo_adquisicion,
+            valor_residual,
+            imagen_equipo,
+            descripcion_equipo,
+            modelo_equipo,
+            numero_serial,
+            proveedor_equipo,
+            nombre_encargado_equipo,
+            ubicacion_equipo,
+            vida_util_equipo,
+            id_categoria,
+            estado_equipo,
+            fecha_actual
+            ) VALUES(:nombre_equipo,
+            :caracteristicas_del_sistema,
+            :fecha_de_adquisicion,
+            :costo_adquisicion,
+            :valor_residual,
+            :imagen_equipo,
+            :descripcion_equipo,
+            :modelo_equipo,
+            :numero_serial,
+            :proveedor_equipo,
+            :nombre_encargado_equipo,
+            :ubicacion_equipo,
+            :vida_util_equipo,
+            :id_categoria,
+            :estado_equipo,
+            :fecha_actual)');
             $stmt->bindParam(':nombre_equipo',$nombre_equipo);
             $stmt->bindParam(':caracteristicas_del_sistema',$caracteristicas_del_sistema);
             $stmt->bindParam(':fecha_de_adquisicion',$fecha_de_adquisicion);
@@ -110,6 +147,7 @@ class Create_equipo{
             $stmt->bindParam(':vida_util_equipo',$vida_util_equipo);
             $stmt->bindParam(':id_categoria',$id_categoria);
             $stmt->bindParam(':estado_equipo',$estado_equipo);
+            $stmt->bindParam(':fecha_actual',$fecha_actual);
 
             if($stmt->execute()){
                 // Responder con éxito

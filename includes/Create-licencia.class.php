@@ -13,6 +13,7 @@ require_once __DIR__ . '..\..\logica\confirmarInt.php';
 require_once __DIR__ . '..\..\credentials\verificar-token.php';
 require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
+require_once __DIR__ . '..\..\logica\obtenerFechaActual.php';
 
 class Create_licencia{
 
@@ -45,7 +46,7 @@ class Create_licencia{
         $proveedor_licencia = $data['proveedor_licencia'];
         $estado_licencia = $data['estado_licencia'];
         $duracion_licencia = $data['duracion_licencia'];
-
+        $fecha_actual = obtenerFechaActual();
 
 
         // verifica si son numeros
@@ -82,11 +83,37 @@ class Create_licencia{
         $proveedor_licencia = $resultado['datos']['proveedor_licencia'];
         $estado_licencia = $resultado['datos']['estado_licencia'];
         $duracion_licencia =$resultado['datos']['duracion_licencia'];
+        $fecha_actual = obtenerFechaActual();
 
 
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('INSERT INTO LICENCIAS (nombre_licencia,descripcion_licencia, numero_licencia,fecha_adquisicion,tipo_licencia,costo_licencia, id_equipo, usuarios_permitidos, proveedor_licencia, estado_licencia, duracion_licencia) VALUES(:nombre_licencia, :descripcion_licencia,:numero_licencia ,:fecha_adquisicion, :tipo_licencia ,:costo_licencia, :id_equipo,:usuarios_permitidos, :proveedor_licencia, :estado_licencia, :duracion_licencia)');
+            $stmt = $conn->prepare('INSERT INTO LICENCIAS (
+            nombre_licencia,
+            descripcion_licencia, 
+            numero_licencia,
+            fecha_adquisicion,
+            tipo_licencia,
+            costo_licencia, 
+            id_equipo, 
+            usuarios_permitidos, 
+            proveedor_licencia, 
+            estado_licencia, 
+            duracion_licencia,
+            fecha_actual
+            ) VALUES(
+            :nombre_licencia, 
+            :descripcion_licencia,
+            :numero_licencia ,
+            :fecha_adquisicion, 
+            :tipo_licencia, 
+            :costo_licencia, 
+            :id_equipo, 
+            :usuarios_permitidos, 
+            :proveedor_licencia, 
+            :estado_licencia, 
+            :duracion_licencia,
+            :fecha_actual)');
             $stmt->bindParam(':nombre_licencia',$nombre_licencia);
             $stmt->bindParam(':descripcion_licencia',$descripcion_licencia);
             $stmt->bindParam(':numero_licencia',$numero_licencia);
@@ -98,7 +125,8 @@ class Create_licencia{
             $stmt->bindParam(':proveedor_licencia',$proveedor_licencia);
             $stmt->bindParam(':estado_licencia',$estado_licencia);
             $stmt->bindParam(':duracion_licencia',$duracion_licencia);
-
+            $stmt->bindParam(':fecha_actual',$fecha_actual);
+           
 
 
             if($stmt->execute()){
