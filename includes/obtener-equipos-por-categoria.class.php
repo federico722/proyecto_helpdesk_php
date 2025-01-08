@@ -12,7 +12,7 @@ require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 
 class Obteniendo_equipos_por_categoria {
     //obtiene la fecha del front y devuelve la consulta que incluye las categorias
-    public static function obtener_equipos_por_categoria($token, $fecha_Actual){
+    public static function obtener_equipos_por_categoria($token, $fecha_actual){
 
     try {
            //verifica que el token no haya vencido
@@ -23,13 +23,13 @@ class Obteniendo_equipos_por_categoria {
      }
 
     // Verificar si los datos necesarios están presentes
-    if (!isset($fecha_Actual)) {
+    if (!isset($fecha_actual)) {
         return sendResponse(400, ["Error400FaltanDatos" => "Faltan datos en la solicitud"]);
       }
 
     $database = new Database();
     $conn = $database->getConnection();
-    $stmt = $conn->prepare('CALL ObtenerEquiposPorCategoria(:fecha_actual)');
+    $stmt = $conn->prepare(' CALL ObtenerCategoriasConCantidadEquipos(:fecha_actual)');
     $stmt->bindParam(':fecha_actual',$fecha_actual);
     
     if($stmt->execute()){

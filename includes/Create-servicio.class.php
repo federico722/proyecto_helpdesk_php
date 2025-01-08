@@ -97,7 +97,8 @@ class Create_servicio{
             estado_servicio,  
             url_acceso, 
             tipo_servicio, 
-            id_equipo) VALUES(
+            id_equipo, 
+            fecha_actual ) VALUES(
             :nombre_servicio, 
             :descripcion_servicio,
             :fecha_inicio ,
@@ -107,7 +108,8 @@ class Create_servicio{
             :estado_servicio, 
             :url_acceso, 
             :tipo_servicio, 
-            :id_equipo)');
+            :id_equipo, 
+            :fecha_actual)');
             $stmt->bindParam(':nombre_servicio',$nombre_servicio);
             $stmt->bindParam(':descripcion_servicio',$descripcion_servicio);
             $stmt->bindParam(':fecha_inicio',$fecha_inicio);
