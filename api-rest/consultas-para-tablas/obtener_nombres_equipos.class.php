@@ -1,15 +1,17 @@
 <?php
+
 require_once '../../logica/formatoRespuesta.php';
-require_once '..\..\includes\obtener-equipos-por-categoria.class.php';
+require_once '..\..\includes\Obtener-todos-los-nombres_equipo.class.php';
+
 header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');  // Agregar OPTIONS
 header('Access-Control-Allow-Credentials: true'); // Si es necesario para permitir credenciales
 
     // Manejar solicitud OPTIONS
-     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            http_response_code(200);
-            exit();
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        http_response_code(200);
+        exit();
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -25,7 +27,7 @@ header('Access-Control-Allow-Credentials: true'); // Si es necesario para permit
     
             if (strcasecmp($type, 'Bearer') === 0) {
                 // Llama a la función de verificación con el token extraído
-                Obteniendo_equipos_por_categoria::obtener_equipos_por_categoria($token, $_GET['fecha_actual']);
+                Obtener_equipos::obtener_nombres_equipo($token);
             }else {
                 sendResponse(400, ['Error' => "El tipo de token debe ser Bearer"]);
             }
@@ -37,6 +39,5 @@ header('Access-Control-Allow-Credentials: true'); // Si es necesario para permit
     }else{
         sendResponse(405,
         ['Error'=> "Metodo incorrecto"]
-      );
+        );
     }
-

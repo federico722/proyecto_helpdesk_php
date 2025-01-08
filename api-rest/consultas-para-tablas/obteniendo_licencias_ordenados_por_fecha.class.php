@@ -26,7 +26,7 @@ header('Access-Control-Allow-Credentials: true'); // Si es necesario para permit
 
         if (strcasecmp($type, 'Bearer') === 0) {
             // Llama a la función de verificación con el token extraído
-            Obteniendo_licencias_ordenados_usando_fecha::obteniendo_licencias_ordenados_usando_fecha($token, $_GET['fecha_Actual']);
+            Obteniendo_licencias_ordenados_usando_fecha::obteniendo_licencias_ordenados_usando_fecha($token, $_GET['fecha_actual']);
         }else {
             sendResponse(400, ['Error' => "El tipo de token debe ser Bearer"]);
         }
