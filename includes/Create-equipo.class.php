@@ -26,7 +26,24 @@ class Create_equipo{
 
         //verifica si los datos necesarios estan presentes
           // Verificar si los datos necesarios están presentes
-          if (!isset($data['nombre_equipo'],$data['caracteristicas_del_sistema'],$data['fecha_de_adquisicion'],$data['costo_adquisicion'],$data['valor_residual'],$data['imagen_equipo'],$data['descripcion_equipo'],$data['modelo_equipo'],$data['numero_serial'],$data['proveedor_equipo'],$data['nombre_encargado_equipo'],$data['ubicacion_equipo'],$data['vida_util_equipo'],$data['id_categoria'],$data['estado_equipo'])) {
+          if (!isset(
+            $data['nombre_equipo'],
+            $data['caracteristicas_del_sistema'],
+            $data['fecha_de_adquisicion'],
+            $data['costo_adquisicion'],
+            $data['valor_residual'],
+            $data['imagen_equipo'],
+            $data['descripcion_equipo'],
+            $data['modelo_equipo'],
+            $data['numero_serial'],
+            $data['placa_activo_fijo'],
+            $data['proveedor_equipo'],
+            $data['nombre_encargado_equipo'],
+            $data['ubicacion_equipo'],
+            $data['vida_util_equipo'],
+            $data['id_categoria'],
+            $data['estado_equipo']
+            )) {
             return sendResponse(400, ["Error" => "Faltan datos en la solicitud",
         "data" => $data]);
         }
@@ -48,6 +65,7 @@ class Create_equipo{
         $descripcion_equipo = $data['descripcion_equipo'];
         $modelo_equipo = $data['modelo_equipo'];
         $numero_serial = $data['numero_serial'];
+        $placa_activo_fijo = $data['placa_activo_fijo'];
         $proveedor_equipo = $data['proveedor_equipo'];
         $nombre_encargado_equipo = $data['nombre_encargado_equipo'];
         $ubicacion_equipo =$data['ubicacion_equipo'];
@@ -70,7 +88,17 @@ class Create_equipo{
 
         // verificar si son cadenas
         $camposValidar = [
-            'nombre_equipo' => $nombre_equipo, 'caracteristicas_del_sistema' => $caracteristicas_del_sistema,'descripcion_equipo' => $descripcion_equipo, 'modelo_equipo' => $modelo_equipo, 'numero_serial' => $numero_serial, 'proveedor_equipo' => $proveedor_equipo,'ubicacion_equipo' => $ubicacion_equipo, 'estado_equipo' => $estado_equipo, 'nombre_encargado_equipo' => $nombre_encargado_equipo, 'vida_util_equipo' => $vida_util_equipo
+            'nombre_equipo' => $nombre_equipo, 
+            'caracteristicas_del_sistema' => $caracteristicas_del_sistema,
+            'descripcion_equipo' => $descripcion_equipo, 
+            'modelo_equipo' => $modelo_equipo, 
+            'numero_serial' => $numero_serial, 
+            'placa_activo_fijo' => $placa_activo_fijo,
+            'proveedor_equipo' => $proveedor_equipo,
+            'ubicacion_equipo' => $ubicacion_equipo, 
+            'estado_equipo' => $estado_equipo, 
+            'nombre_encargado_equipo' => $nombre_encargado_equipo, 
+            'vida_util_equipo' => $vida_util_equipo
            ];
 
          //validar los campos
@@ -91,6 +119,7 @@ class Create_equipo{
         $descripcion_equipo = $resultado['datos']['descripcion_equipo'];
         $modelo_equipo = $resultado['datos']['modelo_equipo'];
         $numero_serial = $resultado['datos']['numero_serial'];
+        $placa_activo_fijo = $resultado['datos']['placa_activo_fijo'];
         $proveedor_equipo = $resultado['datos']['proveedor_equipo'];
         $ubicacion_equipo = $resultado['datos']['ubicacion_equipo'];
         $estado_equipo = $resultado['datos']['estado_equipo'];
@@ -109,6 +138,7 @@ class Create_equipo{
             descripcion_equipo,
             modelo_equipo,
             numero_serial,
+            placa_activo_fijo,
             proveedor_equipo,
             nombre_encargado_equipo,
             ubicacion_equipo,
@@ -125,6 +155,7 @@ class Create_equipo{
             :descripcion_equipo,
             :modelo_equipo,
             :numero_serial,
+            :placa_activo_fijo
             :proveedor_equipo,
             :nombre_encargado_equipo,
             :ubicacion_equipo,
@@ -141,6 +172,7 @@ class Create_equipo{
             $stmt->bindParam(':descripcion_equipo',$descripcion_equipo);
             $stmt->bindParam(':modelo_equipo',$modelo_equipo);
             $stmt->bindParam(':numero_serial',$numero_serial);
+            $stmt->bindParam(':placa_activo_fijo',$placa_activo_fijo);
             $stmt->bindParam(':proveedor_equipo',$proveedor_equipo);
             $stmt->bindParam(':nombre_encargado_equipo',$nombre_encargado_equipo);
             $stmt->bindParam(':ubicacion_equipo',$ubicacion_equipo);

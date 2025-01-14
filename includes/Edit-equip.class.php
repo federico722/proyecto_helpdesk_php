@@ -13,6 +13,8 @@ require_once __DIR__ . '..\..\credentials\verificar-token.php';
 require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 require_once __DIR__ . '..\..\consultas-usuario\consultar-nombre-agente.php';
+require_once __DIR__ . '..\..\consultas-usuario\consultar-nombre-encargado-equipo.php';
+
 
 class Edit_equip{
     public static function Editar_equipo($token){
@@ -24,7 +26,23 @@ class Edit_equip{
 
         // Verificar si los datos necesarios están presentes
         // ,$data['depreciacion_equipo']
-        if (!isset($data['nombre_equipo'],$data['caracteristicas_del_sistema'],$data['numero_serial'],$data['fecha_de_adquisicion'],$data['modelo_equipo'],$data['imagen_equipo'],$data['descripcion_equipo'],$data['estado_equipo'],$data['proveedor_equipo'],$data['ubicacion_equipo'], $data['costo_adquisicion'], $data['vida_util_equipo'],$data['valor_residual'], $data['id_equipo'], $data['nombre_encargado_equipo'])) {
+        if (!isset(
+            $data['nombre_equipo'],
+            $data['caracteristicas_del_sistema'],
+            $data['numero_serial'],
+            $data['fecha_de_adquisicion'],
+            $data['modelo_equipo'],
+            $data['imagen_equipo'],
+            $data['descripcion_equipo'],
+            $data['estado_equipo'],
+            $data['proveedor_equipo'],
+            $data['ubicacion_equipo'], 
+            $data['costo_adquisicion'], 
+            $data['vida_util_equipo'],
+            $data['valor_residual'], 
+            $data['id_equipo'], 
+            $data['placa_activo_fijo']
+            )) {
         return sendResponse(400, ["Error400FaltanDatos" => "Faltan datos en la solicitud"]);
         }
 
@@ -53,7 +71,7 @@ class Edit_equip{
        $estado_equipo = $data['estado_equipo'];
        //$depreciacion_equipo = $data['depreciacion_equipo'];
        $id_equipo = $data['id_equipo'];
-       $nombre_encargado_equipo = $data['nombre_encargado_equipo'];
+       $placa_activo_fijo = $data['placa_activo_fijo'];
 
         // verifica si son fechas
         if (!validarFecha([$fecha_de_adquisicion])) {
@@ -71,7 +89,15 @@ class Edit_equip{
         // verificar si son cadenas
         // 'imagen_equipo' => $imagen_equipo
         $camposValidar = [
-            'nombre_equipo' => $nombre_equipo, 'caracteristicas_del_sistema' => $caracteristicas_del_sistema, 'descripcion_equipo' => $descripcion_equipo, 'modelo_equipo' => $modelo_equipo, 'numero_serial' => $numero_serial, 'proveedor_equipo' => $proveedor_equipo,'ubicacion_equipo' => $ubicacion_equipo, 'estado_equipo' => $estado_equipo, 'nombre_encargado_equipo' => $nombre_encargado_equipo
+            'nombre_equipo' => $nombre_equipo, 
+            'caracteristicas_del_sistema' => $caracteristicas_del_sistema, 
+            'descripcion_equipo' => $descripcion_equipo, 
+            'modelo_equipo' => $modelo_equipo, 
+            'numero_serial' => $numero_serial, 
+            'proveedor_equipo' => $proveedor_equipo,
+            'ubicacion_equipo' => $ubicacion_equipo, 
+            'estado_equipo' => $estado_equipo, 
+            'placa_activo_fijo'=> $placa_activo_fijo
            ];
 
            //'nombre_agente' => $nombre_agente
@@ -89,7 +115,7 @@ class Edit_equip{
          $ubicacion_equipo = $resultado['datos']['ubicacion_equipo'];
          $estado_equipo = $resultado['datos']['estado_equipo'];
         // $nombre_agente = $resultado['datos']['nombre_agente'];
-         $nombre_encargado_equipo = $resultado['datos']['nombre_encargado_equipo'];
+         $placa_activo_fijo = $resultado['datos']['placa_activo_fijo'];
 
          if (!$resultado['valido']) {
             return sendResponse(400, [
@@ -130,7 +156,7 @@ class Edit_equip{
         ubicacion_equipo = :ubicacion_equipo,
         vida_util_equipo = :vida_util_equipo,
         estado_equipo = :estado_equipo,
-        nombre_encargado_equipo = :nombre_encargado_equipo WHERE  id_equipo = :id_equipo');
+        placa_activo_fijo = :placa_activo_fijo WHERE  id_equipo = :id_equipo');
         $stmt->bindParam(':nombre_equipo',$nombre_equipo);
         $stmt->bindParam(':caracteristicas_del_sistema',$caracteristicas_del_sistema);
         $stmt->bindParam(':fecha_de_adquisicion',$fecha_de_adquisicion);
@@ -146,7 +172,7 @@ class Edit_equip{
         $stmt->bindParam(':vida_util_equipo', $vida_util_equipo);
         $stmt->bindParam(':estado_equipo', $estado_equipo);
        // $stmt->bindParam(':depreciacion_equipo', $depreciacion_equipo);
-        $stmt->bindParam(':nombre_encargado_equipo', $nombre_encargado_equipo);
+        $stmt->bindParam(':placa_activo_fijo', $placa_activo_fijo);
         $stmt->bindParam(':id_equipo',$id_equipo);
 
 

@@ -10,8 +10,8 @@ require_once __DIR__ . '..\..\credentials\verificar-token.php';
 require_once __DIR__ . '..\..\logica\validacionesLongitud.php';
 require_once __DIR__ . '..\..\logica\confirmarFecha.php';
 
-class Obteniendo_costos_equipos_servicios_licencias{
-    public static function obteniendo_costos_equipos_servicios_licencias($token){
+class Obtener_servicios_licencias_totales{
+    public static function obtener_licencias_servicios_totales($token){
         try {
         //verifica que el token no haya vencido
         $tokenValidation = validarTokenEnClase($token);
@@ -22,8 +22,8 @@ class Obteniendo_costos_equipos_servicios_licencias{
 
         $database = new Database();
         $conn = $database->getConnection();
-        $stmt = $conn->prepare('CALL ObtenerCostosTotales()');
-        
+        $stmt = $conn->prepare('CALL ObtenerEquiposLicenciasServicios()');
+
         if($stmt->execute()){
             // Obtener todos los resultados
             $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -33,17 +33,16 @@ class Obteniendo_costos_equipos_servicios_licencias{
         ]);
          }else{
              // Responder con error 500 si la inserción falla
-          return sendResponse(500, ["errorInterno" => "No se pudo obtener el total de los precios"]);
+          return sendResponse(500, ["errorInterno" => "No se pudo obtener el total de las licencias y servicios"]);
         }
 
         } catch (\Throwable $th) {
-            error_log('Error al obtener el total de los precios: ' . $th->getMessage());
+            error_log('Error al obtener el total de las licencias y servicios: ' . $th->getMessage());
             return sendResponse(500, [
                 "error" => "ocurrio un error interno del servidor",
                 "detalles" => $th->getMessage()
             ]);
         }
-
+        
     }
-
 }
