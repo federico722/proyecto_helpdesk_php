@@ -42,7 +42,11 @@ class Create_equipo{
             $data['ubicacion_equipo'],
             $data['vida_util_equipo'],
             $data['id_categoria'],
-            $data['estado_equipo']
+            $data['estado_equipo'],
+            $data['antivirus'],
+            $data['perifericos'],
+            $data['office'],
+            $data['anidesk']
             )) {
             return sendResponse(400, ["Error" => "Faltan datos en la solicitud",
         "data" => $data]);
@@ -72,7 +76,10 @@ class Create_equipo{
         $vida_util_equipo =$data['vida_util_equipo'];
         $id_categoria = $data['id_categoria'];
         $estado_equipo = $data['estado_equipo'];
-
+        $antivirus = $data['antivirus'];
+        $perifericos = $data['perifericos'];
+        $office = $data['office'];
+        $anidesk =$data['anidesk'];
 
         // verifica si son numeros
         if (!sonNumerico([$costo_adquisicion,$valor_residual,$id_categoria])) {
@@ -98,7 +105,11 @@ class Create_equipo{
             'ubicacion_equipo' => $ubicacion_equipo, 
             'estado_equipo' => $estado_equipo, 
             'nombre_encargado_equipo' => $nombre_encargado_equipo, 
-            'vida_util_equipo' => $vida_util_equipo
+            'vida_util_equipo' => $vida_util_equipo,
+            'antivirus' => $antivirus,
+            'perifericos' => $perifericos,
+            'office' =>$office,
+            'anidesk' =>$anidesk
            ];
 
          //validar los campos
@@ -125,6 +136,10 @@ class Create_equipo{
         $estado_equipo = $resultado['datos']['estado_equipo'];
         $nombre_encargado_equipo = $resultado['datos']['nombre_encargado_equipo'];
         $vida_util_equipo = $resultado['datos']['vida_util_equipo'];
+        $antivirus = $resultado['datos']['antivirus'];
+        $perifericos = $resultado['datos']['perifericos'];
+        $office = $resultado['datos']['office'];
+        $anidesk = $resultado['datos']['anidesk'];
 
             $database = new Database();
             $conn = $database->getConnection();
@@ -145,7 +160,11 @@ class Create_equipo{
             vida_util_equipo,
             id_categoria,
             estado_equipo,
-            fecha_actual
+            fecha_actual,
+            antivirus,
+            perifericos,
+            office,
+            anidesk
             ) VALUES(:nombre_equipo,
             :caracteristicas_del_sistema,
             :fecha_de_adquisicion,
@@ -162,7 +181,11 @@ class Create_equipo{
             :vida_util_equipo,
             :id_categoria,
             :estado_equipo,
-            :fecha_actual)');
+            :fecha_actual,
+            :antivirus,
+            :perifericos,
+            :office,
+            :anidesk )');
             $stmt->bindParam(':nombre_equipo',$nombre_equipo);
             $stmt->bindParam(':caracteristicas_del_sistema',$caracteristicas_del_sistema);
             $stmt->bindParam(':fecha_de_adquisicion',$fecha_de_adquisicion);
@@ -180,6 +203,10 @@ class Create_equipo{
             $stmt->bindParam(':id_categoria',$id_categoria);
             $stmt->bindParam(':estado_equipo',$estado_equipo);
             $stmt->bindParam(':fecha_actual',$fecha_actual);
+            $stmt->bindParam(':antivirus',$antivirus);
+            $stmt->bindParam(':perifericos',$perifericos);
+            $stmt->bindParam(':office',$office);
+            $stmt->bindParam(':anidesk',$anidesk);
 
             if($stmt->execute()){
                 // Responder con éxito

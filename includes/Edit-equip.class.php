@@ -41,7 +41,11 @@ class Edit_equip{
             $data['vida_util_equipo'],
             $data['valor_residual'], 
             $data['id_equipo'], 
-            $data['placa_activo_fijo']
+            $data['placa_activo_fijo'],
+            $data['antivirus'],
+            $data['perifericos'],
+            $data['office'],
+            $data['anidesk'],
             )) {
         return sendResponse(400, ["Error400FaltanDatos" => "Faltan datos en la solicitud"]);
         }
@@ -72,6 +76,11 @@ class Edit_equip{
        //$depreciacion_equipo = $data['depreciacion_equipo'];
        $id_equipo = $data['id_equipo'];
        $placa_activo_fijo = $data['placa_activo_fijo'];
+       $antivirus = $data['antivirus'];
+       $perifericos = $data['perifericos'];
+       $office = $data['office'];
+       $anidesk = $data['anidesk'];
+
 
         // verifica si son fechas
         if (!validarFecha([$fecha_de_adquisicion])) {
@@ -156,7 +165,11 @@ class Edit_equip{
         ubicacion_equipo = :ubicacion_equipo,
         vida_util_equipo = :vida_util_equipo,
         estado_equipo = :estado_equipo,
-        placa_activo_fijo = :placa_activo_fijo WHERE  id_equipo = :id_equipo');
+        placa_activo_fijo = :placa_activo_fijo,
+        antivirus = :antivirus,
+        perifericos = :perifericos,
+        office = :office,
+        anidesk = :anidesk  WHERE  id_equipo = :id_equipo');
         $stmt->bindParam(':nombre_equipo',$nombre_equipo);
         $stmt->bindParam(':caracteristicas_del_sistema',$caracteristicas_del_sistema);
         $stmt->bindParam(':fecha_de_adquisicion',$fecha_de_adquisicion);
@@ -174,6 +187,10 @@ class Edit_equip{
        // $stmt->bindParam(':depreciacion_equipo', $depreciacion_equipo);
         $stmt->bindParam(':placa_activo_fijo', $placa_activo_fijo);
         $stmt->bindParam(':id_equipo',$id_equipo);
+        $stmt->bindParam(':antivirus',$antivirus);
+        $stmt->bindParam(':perifericos',$perifericos);
+        $stmt->bindParam(':office',$office );
+        $stmt->bindParam(':anidesk',$anidesk );
 
 
             if($stmt->execute()){
