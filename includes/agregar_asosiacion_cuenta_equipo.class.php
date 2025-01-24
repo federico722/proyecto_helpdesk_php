@@ -26,10 +26,11 @@ class agregar_asosiacion_cuentas {
                 return sendResponse(400, ["ErrorToken" => "Token vencido"]);
             }
 
-            if (!isset($data['aplicaciones_referenciadas'], $data['nombre_usuario'], $data['contrasenia_usuario'])) {
+            if (!isset($data['aplicaciones_referenciadas'], $data['nombre_usuario'], $data['contrasenia_usuario'],$data['id_equipo'])) {
                 return sendResponse(400, ["Error" => "Faltan datos en la solicitud"]);
             }
 
+            $id_equipo = $data['id_equipo'];
             $aplicaciones_referenciadas = $data['aplicaciones_referenciadas'];
             $nombre_usuario = $data['nombre_usuario'];
             $contrasenia_usuario = $data['contrasenia_usuario'];
@@ -54,18 +55,30 @@ class agregar_asosiacion_cuentas {
             
         $database = new Database();
         $conn = $database->getConnection();
-        for ($i=0; $i < count($aplicaciones_referenciadas) ; $i++) { 
-            $stmt = $conn->prepare('');
+        foreach($aplicaciones_referenciadas as $aplicacion){
+            $stmt = $conn->prepare('CALL InsertarAsignacionSitios(:id_equipo,:nombre_usuario, :contrasenia_usuario, :aplicacion)');
+            $stmt->bindParam(':id_equipo',$id_equipo);
+            $stmt->bindParam(':nombre_usuario',$nombre_usuario);
+            $stmt->bindParam(':contrasenia_usuario',$contrasenia_usuario);
+            $stmt->bindParam(':aplicacion', $aplicacion);  
+
+            if (!$stmt->execute()) {
+                error_log('Error al ejecutar el procedimiento almacenado: ' . implode(", ", $stmt->errorInfo()));
+                return sendResponse(500, [
+                    "error" => "No se pudo procesar la solicitud para la aplicación: $aplicacion"
+                ]);
+            }
+
         }
+
+        return sendResponse(200, ["success" => "Asociaciones creadas correctamente"]);
         
-
-
         } catch (\Throwable $th) {
             error_log('Error al agregar las asociaciones a las cuentas: ' . $th->getMessage());
             return sendResponse(500, [
-                "error" => "ocurrio un error interno del servidor",
+                "error" => "Ocurrió un error interno del servidor",
                 "detalles" => $th->getMessage()
-         ]);
+            ]);
         }
     }
 }
