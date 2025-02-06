@@ -6,6 +6,7 @@ require_once __DIR__ . '..\..\includes\Database.class.php';
 
 function consultar_licencias_servicios($nombre_equipo){
     try {
+        
         $database = new Database();
         $conn = $database->getConnection();
         $stmt = $conn->prepare('CALL ObtenerServiciosYLicenciasPorEquipo(:nombre_equipo)');

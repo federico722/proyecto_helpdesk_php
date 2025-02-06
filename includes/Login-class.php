@@ -20,7 +20,7 @@ class Login{
 
 
          // Verificar si los datos necesarios están presentes
-          if (!isset($data['usuario'], $data['contrasena'], $data['confirmarContrasena'] )) {
+          if (!isset($data['usuario'], $data['contrasena'])) {
               header('HTTP/1.1 400 Bad Request');
               echo json_encode(["error400" => "Faltan datos en la solicitud"]);
               exit;
@@ -29,14 +29,7 @@ class Login{
            // Obtengo los datos del formato json
            $usuario = $data['usuario'];
            $contrasena = $data['contrasena'];
-           $confirmarContrasena = $data['confirmarContrasena'];
 
-           // compara las contraseñas
-          if (!comparePassword($contrasena,$confirmarContrasena)) {
-              header('HTTP/1.1 404 No coincide la contrasena');
-              echo json_encode(["errorPassword" => "Las contrasenas no coinciden"]);
-              exit;
-          }
 
           // verificar si son cadenas
           if (!sonCadenas([$usuario,$contrasena])) {
@@ -60,7 +53,8 @@ class Login{
                    return sendResponse(200, [
                        "success" => "Usuario verificado con exito",
                        "login" => true,
-                       "token" => $token
+                       "token" => $token,
+                       "rol" => "user"
                     ]);
 
                 }else{

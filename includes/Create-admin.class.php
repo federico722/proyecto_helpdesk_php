@@ -17,7 +17,7 @@ class Create_admin{
            $data = json_decode(file_get_contents("php://input"), true);
 
            // Verificar si los datos necesarios están presentes
-           if (!isset($data['usuario'], $data['contrasena'], $data['confirmarContrasena'])) {
+           if (!isset($data['usuario'], $data['contrasena'], $data['confirmarContrasena'] ,$data['correo'])) {
                header('HTTP/1.1 400 Bad Request');
                echo json_encode(["error" => "Faltan datos en la solicitud"]);
                exit;
@@ -25,27 +25,28 @@ class Create_admin{
 
 
            // Obtengo los datos del formato json
-           $usuario = $data['usuario'];
-           $contrasena = $data['contrasena'];
+           $usuario_agente = $data['usuario'];
+           $contrasena_agente = $data['contrasena'];
            $confirmarContrasena = $data['confirmarContrasena'];
+           $correo_agente = $data['correo'];
 
 
            // compara las contraseñas
-           if (!comparePassword($contrasena,$confirmarContrasena)) {
-               header('HTTP/1.1 404 No coincide la contrasena');
+           if (!comparePassword($contrasena_agente,$confirmarContrasena)) {
+               header('HTTP/1.1 Password404 No coincide la contrasena');
                echo json_encode(["error" => "Las contrasenas no coinciden"]);
                exit;
            }
 
-           if (!sonCadenas([$usuario,$contrasena])) {
+           if (!sonCadenas([$usuario_agente])) {
                header('HTTP/1.1 400 No son string');
                echo json_encode(["error"=> "Solo se permite string"]);
                exit;
            }
 
            //verifica si se obtuvo la contraseña de la base de datos
-           $contrasenaBD = consultarContraseña(($usuario));
-
+          // $contrasenaBD = consultarContraseña(($usuario));
+/*
            if ($contrasenaBD) {
                if (!verificarContrasena($contrasena,$contrasenaBD)) {
                    header('HTTP/1.1 404 contrasena incorrecta');
@@ -56,15 +57,19 @@ class Create_admin{
                header('HTTP/1.1 500 No se obtuvo la contraseña');
                echo json_encode(["error"=> "Error al consultar la contrasena"]);
                exit;
-           }
+           }*/
 
             $rol = 1;
 
+            $bycripPassword = password_hash($contrasena_agente, PASSWORD_BCRYPT);
+
             $database = new Database();
             $conn = $database->getConnection();
-            $stmt = $conn->prepare('UPDATE AGENTES SET id_rol = :rol WHERE usuario_agente = :usuario');
-            $stmt->bindParam(':usuario',$usuario);
-            $stmt->bindParam(':rol',$rol); // Agregar esta línea
+            $stmt = $conn->prepare('INSERT INTO agentes (usuario_agente, contrasena_agente, correo_agente, id_rol) VALUES (:usuario_agente, :contrasena_agente, :correo_agente , 1)');
+            $stmt->bindParam(':usuario_agente',$usuario_agente);
+            $stmt->bindParam(':contrasena_agente',$bycripPassword);
+            $stmt->bindParam(':correo_agente',$correo_agente);
+            
 
             if($stmt->execute()){
              // Responder con éxito

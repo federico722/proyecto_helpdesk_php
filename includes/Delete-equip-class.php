@@ -56,7 +56,7 @@ class delete_equipo{
         //validar que no haya datos en EQUIPOS
         if (!$resultadoBuscarServicioLicencia ) {
             return sendResponse(400, [
-                "ErrorCode01x" => "No es posible eliminar el equipo ahi servicios o licencias",
+                "ErrorCode01x" => "No es posible eliminar el equipo ahi servicios, licencias y aplicaciones",
             ]);
         }
 

@@ -12,7 +12,7 @@ function consultar_equipos_categoria($nombre_categoria){
 
         if ($stmt->execute()) {
 
-            $resultado =  $stmt->fetch(PDO::FETCH_ASSOC);
+            $resultado =  $stmt->fetchALL(PDO::FETCH_ASSOC);
 
             return $resultado ? false : true;
         }else {

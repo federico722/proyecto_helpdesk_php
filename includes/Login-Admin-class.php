@@ -10,7 +10,7 @@ require_once __DIR__ . '..\..\vendor/autoload.php';
 require_once __DIR__ . '..\..\credentials\create-token.php';
 require_once __DIR__ . '..\..\credentials\obtener-payload-token.php';
 require_once __DIR__ . '..\..\logica\formatoRespuesta.php';
-
+require_once __DIR__ . '..\..\credentials\verificarRol.php';
 
 class Login_admin{
     public static function iniciar_sesion_admin(){
@@ -21,7 +21,7 @@ class Login_admin{
 
 
          // Verificar si los datos necesarios están presentes
-          if (!isset($data['usuario'], $data['contrasena'], $data['confirmarContrasena'] )) {
+          if (!isset($data['usuario'], $data['contrasena'] )) {
               header('HTTP/1.1 400 Bad Request');
               echo json_encode(["error400" => "Faltan datos en la solicitud"]);
               exit;
@@ -30,8 +30,7 @@ class Login_admin{
            // Obtengo los datos del formato json
            $usuario = $data['usuario'];
            $contrasena = $data['contrasena'];
-           $confirmarContrasena = $data['confirmarContrasena'];
-
+          
            // verificar si son cadenas
            if (!sonCadenas([$usuario,$contrasena])) {
             header('HTTP/1.1 404 No son string');
@@ -47,37 +46,31 @@ class Login_admin{
              return sendResponse(404, ["errorNoEncontrado" => "Usuario no encontrado"]);
         }
 
-          // compara las contraseñas
-        if (!comparePassword($contrasena,$confirmarContrasena)) {
-             header('HTTP/1.1 404 No coincide la contrasena');
-            echo json_encode(["errorPassword" => "Las contrasenas no coinciden"]);
-            exit;
-        }
 
            //verificamos el rol
            $rol = consultarRol($usuario);
 
-         if ($rol !== "admin") {
+         if ($rol !== "admin" && $rol !== "superAdmin") {
             header('HTTP/1.1 404 No coincide el rol');
             echo json_encode(["errorRol" => "El rol no es administrador"]);
             exit;
          }
 
+        //verificamos la contraseña del usuario con la contraseña de la base de datos
+        if (verificarContrasena($contrasena, $contrasenaObtenida)) {
 
+            $token = crearToken($usuario);
 
-                //verificamos la contraseña del usuario con la contraseña de la base de datos
-                if (verificarContrasena($contrasena, $contrasenaObtenida)) {
+            return sendResponse(200, [
+                "success" => "Usuario verificado con exito",
+                "login" => true,
+                "token" => $token,
+                "rol" => $rol
+            ]);
 
-                    $token = crearToken($usuario);
-                   return sendResponse(200, [
-                       "success" => "Usuario verificado con exito",
-                       "login" => true,
-                       "token" => $token
-                    ]);
-
-                }else{
-                  return sendResponse(401, ["errorContrasenaIncorrecta" => "Contraseña incorrecta"]);
-                }
+        }else{
+             return sendResponse(401, ["errorContrasenaIncorrecta" => "Contraseña incorrecta"]);
+        }
 
             } catch (\Throwable $th) {
                 error_log('Error al validar el usuario: ' . $th->getMessage());

@@ -49,7 +49,7 @@ class agregar_asosiacion_cuentas {
                 "detalles" => $resultado['errores']
             ]);
         }
-
+ 
         $nombre_usuario = $resultado['datos']['nombre_usuario'];
         $contrasenia_usuario = $resultado['datos']['contrasenia_usuario'];
             
